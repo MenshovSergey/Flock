@@ -1,0 +1,12 @@
+﻿Построение начато 22.10.2013 17:00:23.
+     1>Проект "C:\Users\sergej\Documents\Visual Studio 2010\Projects\CS 1 base\newFlock\newFlock\newFlock.vcxproj" в узле 2 (целевые объекты build).
+     1>InitializeBuildStatus:
+         Создание "Debug\newFlock.unsuccessfulbuild", так как было задано "AlwaysCreate".
+       FinalizeBuildStatus:
+         Файл "Debug\newFlock.unsuccessfulbuild" удаляется.
+         Обращение к "Debug\newFlock.lastbuildstate".
+     1>Построение проекта "C:\Users\sergej\Documents\Visual Studio 2010\Projects\CS 1 base\newFlock\newFlock\newFlock.vcxproj" завершено (целевые объекты build).
+
+Построение успешно завершено.
+
+Затраченное время: 00:00:00.70
