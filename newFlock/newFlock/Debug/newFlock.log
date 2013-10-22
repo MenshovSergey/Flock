@@ -1,0 +1,14 @@
+﻿Сборка начата 22.10.2013 2:10:55.
+     1>Проект "D:\Users\sir-chaos\Desktop\PROG\flock\newFlock\newFlock\newFlock.vcxproj" в узле 2 (целевые объекты build).
+     1>PrepareForBuild:
+         Создание каталога "D:\Users\sir-chaos\Desktop\PROG\flock\newFlock\Debug\".
+       InitializeBuildStatus:
+         Создание "Debug\newFlock.unsuccessfulbuild", так как было задано "AlwaysCreate".
+       FinalizeBuildStatus:
+         Файл "Debug\newFlock.unsuccessfulbuild" удаляется.
+         Обращение к "Debug\newFlock.lastbuildstate".
+     1>Построение проекта "D:\Users\sir-chaos\Desktop\PROG\flock\newFlock\newFlock\newFlock.vcxproj" завершено (целевые объекты build).
+
+Построение успешно завершено.
+
+Затраченное время: 00:00:01.23
