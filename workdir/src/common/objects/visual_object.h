@@ -9,9 +9,7 @@ namespace object
     class visual_object
         : object_vis
     {
-    public: //construction
-        void init       () override;
-        void deinit     () override;
+
     public: //info_vis
         void render     () override;
 
@@ -20,8 +18,11 @@ namespace object
         void reg        () override;
         void unreg      () override;
     public: //manipulators
-        void move       () override;
+        void move       (point_3d) override;
 
+    public: //construction
+        void init       ();
+        void deinit     ();
              visual_object ();
              ~visual_object();
     private:

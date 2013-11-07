@@ -1,18 +1,12 @@
 #pragma once
 #include "containers/state.h"
 #include "containers/state_vis.h"
+#include <geometry/point_3d.h>
 #include <vector>
 
 
 namespace object
 {
-
-struct construction
-{
-    virtual void init          () = 0;
-    virtual void deinit        () = 0;
-    virtual      ~construction () {};
-};
 
 struct info_mod
 {
@@ -37,16 +31,14 @@ struct semantic
 
 struct controls
 {
-    virtual void set_force () = 0;
+    virtual void set_force (point_3d new_force) = 0;
     virtual      ~controls () {} ;
 };
 
 struct manipulators
 {
-    virtual void move() = 0;
+    virtual void move(point_3d) = 0;
     virtual      ~manipulators() {} ;
 };
-
-struct
 
 } //object

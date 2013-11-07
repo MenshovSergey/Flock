@@ -1,6 +1,7 @@
 #pragma once
-#include "objects/object_mod.h"
-#include<geometry/point_3d.h>
+#include <objects/object_mod_base.h>
+#include <objects/visual_object.h>
+#include <geometry/point_3d.h>
 
 namespace object
 {
@@ -9,9 +10,6 @@ class dynamic_object
     : object_mod
     , controls
 {
-    public: //construction
-        void      init          () override;
-        void      deinit        () override;
     public: //info_mod
         state     get_state     () override;
         state_vis get_state_vis () override;
@@ -24,9 +22,13 @@ class dynamic_object
     public : //controls
         void      set_force     (point_3d new_force) override;
 
-
+    public:
+        void      init          (point_3d, point_3d, point_3d, double, double, double, double);
+        void      deinit        ();
+        void      revisualise   (visual_object*);
                   dynamic_object();
-                 ~dynamic_object();
+                  ~dynamic_object();
+
     private:
         point_3d       coord;
         point_3d       speed;

@@ -14,11 +14,11 @@ struct world
     , semantic
 {
     public: //construction
-        void add           ();
-        void remove        ();
+        void add           (object::object_mod & const);
+        void remove        (size_t);
 
     public: //info
-        object::object_mod &               const access  ();
+        object::object_mod *               const access  (size_t);
         std::vector<object::object_mod*> & const content ();
 
     public: //semantic

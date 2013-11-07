@@ -12,15 +12,16 @@ struct scene
     , semantic
 {
     public: //construction
-        void add           ();
-        void remove        ();
+        void add           (object::object_vis & const);
+        void remove        (size_t);
 
     public: //info
-        object::object_vis &               const access  ();
+        object::object_vis &               const access  (size_t);
         std::vector<object::object_vis*> & const content ();
 
     public: //semantic
         void update   ();
+        void render   ();
         void obj_sort (); //i suppose we would update managers before objects and so on;
         
              scene();

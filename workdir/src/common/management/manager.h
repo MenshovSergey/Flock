@@ -11,9 +11,6 @@ namespace object
 struct manager 
     : object_mod
 {
-	public: //construction
-        void      init          () override;
-        void      deinit        () override;
     public: //info_mod
         state     get_state     () override;
         state_vis get_state_vis () override;
@@ -23,6 +20,9 @@ struct manager
         void      reg           () override;
         void      unreg         () override;
 
+    public:
+        void      init          ();
+        void      deinit        ();
                   manager       ();
                   ~manager      ();
 
@@ -31,7 +31,7 @@ struct manager
         std::vector<controls*>   controlled;
         size_t                   reg_size;
         size_t                   cont_size;
-        behaviour                b_func;
+        behaviour::behaviour     b_func;
 };
 
 } //object

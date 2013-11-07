@@ -1,10 +1,15 @@
-#pragma once 
+#pragma once
+#include <objects/object_base.h>
 
+namespace behaviour
+{
 
 struct behaviour
 {
          behaviour();
          ~behaviour();
-         
-	void update();
+
+	void update(object::controls*  controlled);
 };
+
+}
