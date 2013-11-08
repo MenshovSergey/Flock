@@ -4,6 +4,7 @@
 #include <flock/flock.h>
 #include <behaviour/behaviour.h>
 #include <vector>
+#include <map>
 
 namespace object
 {
@@ -17,21 +18,23 @@ struct manager
 
     public: //semantic
         void      update        () override;
-        void      reg           () override;
-        void      unreg         () override;
+
+    public: //object_mod
+        void      reg           (object_mod*) override;
+        void      unreg         (object_mod*) override;
 
     public:
-        void      init          ();
+        void      init          (behaviour::behaviour new_behaviour);
         void      deinit        ();
                   manager       ();
                   ~manager      ();
 
     private:
-        std::vector<object_mod*> registered;
-        std::vector<controls*>   controlled;
-        size_t                   reg_size;
-        size_t                   cont_size;
-        behaviour::behaviour     b_func;
+        std::vector<object_mod*>         registered;
+        std::map<object_mod*, controls*> controlled;
+        size_t                           reg_size;
+        size_t                           cont_size;
+        behaviour::behaviour             b_func;
 };
 
 } //object

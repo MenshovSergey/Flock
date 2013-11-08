@@ -27,11 +27,11 @@ namespace object
         {
             return;
         }
-        void static_object::reg()
+        void static_object::reg(object_mod* new_manager)
         {
 
         }
-        void static_object::unreg()
+        void static_object::unreg(object_mod* new_manager)
         {
 
         }

@@ -14,7 +14,7 @@ struct world
     , semantic
 {
     public: //construction
-        void add           (object::object_mod & const);
+        void add           (object::object_mod * const);
         void remove        (size_t);
 
     public: //info

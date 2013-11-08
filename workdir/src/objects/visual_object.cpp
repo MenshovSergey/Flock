@@ -4,13 +4,18 @@ using namespace std;
 
 namespace object
 {
-        void visual_object::init()
+        void visual_object::init(point_3d new_coord)
         {
-
+            coord = new_coord;
         }
         void visual_object::deinit()
         {
 
+        }
+
+        void visual_object::giveown(object_mod * const new_owner)
+        {
+            owner = new_owner;
         }
         void visual_object::render()
         {
@@ -30,17 +35,8 @@ namespace object
 
         void visual_object::update()
         {
-
-        }
-
-        void visual_object::reg()
-        {
-
-        }
-
-        void visual_object::unreg()
-        {
-
+            state_vis temp = owner->get_state_vis();
+            coord = temp.coord;
         }
 
         void visual_object::move(point_3d new_coord)

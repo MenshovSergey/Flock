@@ -37,7 +37,10 @@ namespace scene
 
     void scene::render()
     {
-        assert(0); //TODO: implement
+        for (int i = 0; i < list_size; ++i)
+        {
+            object_list[i]->render();
+        }
     }
 
     scene::scene()

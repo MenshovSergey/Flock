@@ -4,9 +4,9 @@
 using namespace std;
 namespace world
 {
-    void world::add(object::object_mod & const new_obj)
+    void world::add(object::object_mod * const new_obj)
     {
-        object_list.push_back(&new_obj);
+        object_list.push_back(new_obj);
         ++list_size;
     }
 
@@ -49,6 +49,10 @@ namespace world
 
     world::~world()
     {
+        for (int i = 0; i < list_size; ++i)
+        {
+            delete(object_list[i]);
+        }
         delete(&visualisation);
     }
 

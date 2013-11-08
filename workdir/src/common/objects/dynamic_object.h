@@ -16,16 +16,20 @@ class dynamic_object
 
     public: //semantic
         void      update        () override;
-        void      reg           () override;
-        void      unreg         () override;
 
     public : //controls
         void      set_force     (point_3d new_force) override;
+
+    public : //object_mod
+        void      reg           (object_mod*) override;
+        void      unreg         (object_mod*) override;
+
 
     public:
         void      init          (point_3d, point_3d, point_3d, double, double, double, double);
         void      deinit        ();
         void      revisualise   (visual_object*);
+
                   dynamic_object();
                   ~dynamic_object();
 

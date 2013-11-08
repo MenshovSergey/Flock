@@ -16,8 +16,10 @@ class static_object
 
     public: //semantic
         void      update        () override;
-        void      reg           () override;
-        void      unreg         () override;
+
+    public : //object_mod
+        void      reg           (object_mod*) override;
+        void      unreg         (object_mod*) override;
 
     public: 
         void      init          (point_3d, double);

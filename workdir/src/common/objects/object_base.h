@@ -24,8 +24,6 @@ struct info_vis
 struct semantic
 {
     virtual void  update    () = 0;
-    virtual void  reg       () = 0;
-    virtual void  unreg     () = 0;
     virtual       ~semantic () {};
 };
 

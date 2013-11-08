@@ -23,6 +23,7 @@ namespace object
         void dynamic_object::revisualise (visual_object* new_visualisation)
         {
             visualisation = new_visualisation;
+            visualisation->giveown(this);
         }
 
         state dynamic_object::get_state()
@@ -48,14 +49,14 @@ namespace object
             coord += speed;
         }
 
-        void dynamic_object::reg()
+        void dynamic_object::reg(object_mod* new_manager)
         {
-
+            new_manager->reg(this);
         }
 
-        void dynamic_object::unreg()
+        void dynamic_object::unreg(object_mod* new_manager)
         {
-
+            new_manager->unreg(this);
         }
 
         void dynamic_object::set_force(point_3d new_force)

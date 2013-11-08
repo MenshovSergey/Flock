@@ -1,6 +1,12 @@
 #pragma once 
-#include "Manager.h"
+#include "objects/object_mod_base.h"
 
-struct Flock : Manager {
+namespace object
+{
+
+struct flock : object_mod 
+{
 	
 };
+
+}
