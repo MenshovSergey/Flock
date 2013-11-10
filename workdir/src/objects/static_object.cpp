@@ -16,8 +16,15 @@ namespace object
         state static_object::get_state()
         {
             state result;
+            result.coord = coord;
             return result;
         }
+
+        int static_object::get_type()
+        {
+            return obj_type;
+        }
+
         state_vis static_object::get_state_vis()
         {
             state_vis result;
@@ -37,9 +44,10 @@ namespace object
         }
 
 
-        static_object::static_object()
+        static_object::static_object(int object_type)
             : coord(0,0,0)
             , radius(0)
+            , obj_type(object_type)
         {
 
         }

@@ -1,5 +1,6 @@
 #include<world/world.h>
 #include<cassert>
+#include<iostream>
 
 using namespace std;
 namespace world
@@ -29,7 +30,7 @@ namespace world
 
     void world::update()
     {
-        for (int i = 0; i < list_size; ++i)
+        for (size_t i = 0; i < list_size; ++i)
         {
             object_list[i]->update();
         }
@@ -40,10 +41,10 @@ namespace world
         assert(0); //TODO: sort objects
     }
 
-    world::world()
+    world::world(scene::scene & const new_visualisation)
         : object_list(0)
         , list_size(0)
-        , visualisation(*(new scene::scene))
+        , visualisation(new_visualisation)
     {
     }
 

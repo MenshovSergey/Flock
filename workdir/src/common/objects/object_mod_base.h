@@ -1,12 +1,12 @@
 #pragma once
-#include "object_base.h"
+#include <objects/object_base.h>
 
 namespace object
 {
 
 struct object_mod
-    : info_mod
-    , semantic
+    : public info_mod
+    , public semantic
 {
     virtual void    reg        (object_mod*) = 0;
     virtual void    unreg      (object_mod*) = 0;

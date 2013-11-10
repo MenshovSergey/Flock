@@ -10,11 +10,12 @@ namespace object
 {
 
 struct manager 
-    : object_mod
+    : public object_mod
 {
     public: //info_mod
         state     get_state     () override;
         state_vis get_state_vis () override;
+        int       get_type      () override;
 
     public: //semantic
         void      update        () override;
@@ -26,7 +27,7 @@ struct manager
     public:
         void      init          (behaviour::behaviour new_behaviour);
         void      deinit        ();
-                  manager       ();
+                  manager       (int object_type);
                   ~manager      ();
 
     private:
@@ -35,6 +36,7 @@ struct manager
         size_t                           reg_size;
         size_t                           cont_size;
         behaviour::behaviour             b_func;
+        int                              obj_type;
 };
 
 } //object

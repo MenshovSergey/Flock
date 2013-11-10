@@ -7,18 +7,20 @@ namespace object
 {
 
 class dynamic_object
-    : object_mod
-    , controls
+    : public object_mod
+    , public controls
 {
     public: //info_mod
         state     get_state     () override;
         state_vis get_state_vis () override;
+        int       get_type      () override;
 
     public: //semantic
         void      update        () override;
 
     public : //controls
         void      set_force     (point_3d new_force) override;
+        void      full_force    (point_3d dir_force) override;
 
     public : //object_mod
         void      reg           (object_mod*) override;
@@ -30,7 +32,7 @@ class dynamic_object
         void      deinit        ();
         void      revisualise   (visual_object*);
 
-                  dynamic_object();
+                  dynamic_object(int object_type);
                   ~dynamic_object();
 
     private:
@@ -42,6 +44,7 @@ class dynamic_object
         double         mass;
         double         radius;
         visual_object* visualisation;
+        int            obj_type;
         //quaternion for orientation
 };
 

@@ -7,7 +7,7 @@ namespace world
 
 struct construction
 {
-    virtual void add           (object::object_mod & const) = 0;
+    virtual void add           (object::object_mod * const) = 0;
     virtual void remove        (size_t) = 0;
     virtual      ~construction () {};
 };

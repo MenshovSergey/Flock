@@ -17,6 +17,11 @@ namespace object
             return res;
         }
 
+        int manager::get_type()
+        {
+            return obj_type;
+        }
+
         void manager::update ()
         {
             b_func.update(registered, controlled);
@@ -28,8 +33,12 @@ namespace object
             ++reg_size;
             try
             {
-                controlled.insert(make_pair(new_object, dynamic_cast<controls *>(new_object)));  // IS THIS CORRECT?!
-                ++cont_size;
+                controls * t_cont = dynamic_cast<controls *>(new_object);
+                if (t_cont != 0)
+                {
+                    controlled.insert(make_pair(new_object, t_cont));  // IS THIS CORRECT?!
+                    ++cont_size;
+                }
             }
             catch (exception& e)
             {
@@ -47,12 +56,13 @@ namespace object
         {
 
         }
-        manager::manager ()
+        manager::manager (int object_type)
             : registered()
             , controlled()
             , reg_size(0)
             , cont_size(0)
             , b_func(0)
+            , obj_type(object_type)
         {
         }
         manager::~manager()

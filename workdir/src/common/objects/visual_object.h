@@ -8,11 +8,11 @@ namespace object
 {
 
     class visual_object
-        : object_vis
+        : public object_vis
     {
 
     public: //info_vis
-        void render        () override;
+        look render        () override;
 
     public: //semantic
         void update        () override;
@@ -23,6 +23,7 @@ namespace object
     public: //construction
         void init          (point_3d);
         void deinit        ();
+        void change_vis    (bool);
         void giveown       (object_mod * const);
              visual_object ();
              ~visual_object();

@@ -5,9 +5,9 @@ namespace object
 {
 
 struct object_vis
-    : info_vis
-    , semantic
-    , manipulators
+    : public info_vis
+    , public semantic
+    , public manipulators
 {
 
     virtual ~object_vis() {};

@@ -1,5 +1,5 @@
 #include<objects/visual_object.h>
-
+#include<iostream>
 using namespace std;
 
 namespace object
@@ -13,17 +13,53 @@ namespace object
 
         }
 
+        void visual_object::change_vis(bool is_vis)
+        {
+            is_visible = is_vis;
+        }
+
         void visual_object::giveown(object_mod * const new_owner)
         {
             owner = new_owner;
         }
-        void visual_object::render()
+        look visual_object::render()
         {
+            look result(model_vis);
             if (!is_visible) // object is invisible/not existent
             {
-                return;
+                result.is_visible = false;
+                return result;
             }
 
+            result.is_visible = true;
+            result.coord = coord;
+            //TEMP CODE
+            /*int h = 25;
+            int w = 60;
+            char mesh = '+';
+            int pos_y = static_cast<int>(coord.y);
+            int pos_x = static_cast<int>(coord.x);
+            if ((pos_x < 0) || (pos_y < 0) || (pos_x >= w) || (pos_y >= h))
+            {
+                mesh = '.';
+            }
+            for (int j = 0; j < pos_y; ++j)
+            {
+                cout << "\n";
+            }
+            for (int k = 0; k < pos_x; ++k)
+            {
+                cout << " ";
+            }
+            cout << mesh;
+            cout << "\n";
+            for (int j = pos_y + 1; j < h; ++j)
+            {
+                cout << "\n";
+            }*/
+
+            return result;
+            //^^TEMP CODE
             /*
              GET LOOK;
              MOVE IT BY COORD;

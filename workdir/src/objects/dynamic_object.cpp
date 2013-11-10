@@ -38,6 +38,11 @@ namespace object
             return result;
         }
 
+        int dynamic_object::get_type()
+        {
+            return obj_type;
+        }
+
         void dynamic_object::update()
         {
             speed += force;
@@ -69,8 +74,13 @@ namespace object
             }
         }
 
+        void dynamic_object::full_force(point_3d dir_force)
+        {
+            force = dir_force / abs(dir_force) * max_force;
+        }
 
-        dynamic_object::dynamic_object()
+
+        dynamic_object::dynamic_object(int object_type)
             : coord(0,0,0)
             , speed(0,0,0)
             , force(0,0,0)
@@ -79,6 +89,7 @@ namespace object
             , mass(0)
             , radius(0)
             , visualisation(0)
+            , obj_type(object_type)
         {
 
         }

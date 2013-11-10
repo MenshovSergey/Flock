@@ -79,6 +79,7 @@
     <ClInclude Include="common\objects\object_mod_base.h" />
     <ClInclude Include="common\objects\object_vis_base.h" />
     <ClInclude Include="common\objects\visual_object.h" />
+    <ClInclude Include="common\scene3d\scene3d.h" />
     <ClInclude Include="common\scene\scene.h" />
     <ClInclude Include="common\scene\scene_base.h" />
     <ClInclude Include="common\world\world_base.h" />
@@ -97,6 +98,9 @@
     <ClCompile Include="scene\scene.cpp" />
     <ClCompile Include="objects\visual_object.cpp" />
     <ClCompile Include="world\world.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

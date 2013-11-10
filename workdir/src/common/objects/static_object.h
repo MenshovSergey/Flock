@@ -7,12 +7,13 @@ namespace object
 {
 
 class static_object
-    : object_mod
+    : public object_mod
 {
 
     public: //info_mod
         state     get_state     () override;
         state_vis get_state_vis () override;
+        int       get_type      () override;
 
     public: //semantic
         void      update        () override;
@@ -25,12 +26,13 @@ class static_object
         void      init          (point_3d, double);
         void      deinit        ();
 
-                  static_object ();
+                  static_object (int object_type);
                   ~static_object();
     private:
         point_3d       coord;
         double         radius;
         visual_object* visualisation;
+        int            obj_type;
         //quaternion for orientation
 };
 

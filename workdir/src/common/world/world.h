@@ -9,23 +9,23 @@ namespace world
 
 
 struct world
-    : construction
-    , info
-    , semantic
+    : public construction
+    , public info
+    , public semantic
 {
     public: //construction
-        void add           (object::object_mod * const);
-        void remove        (size_t);
+        void add           (object::object_mod * const) override;
+        void remove        (size_t) override;
 
     public: //info
-        object::object_mod *               const access  (size_t);
-        std::vector<object::object_mod*> & const content ();
+        object::object_mod *               const access  (size_t) override;
+        std::vector<object::object_mod*> & const content () override;
 
     public: //semantic
-        void update   ();
-        void obj_sort (); //i suppose we would update managers before objects and so on;
+        void update   () override;
+        void obj_sort () override; //i suppose we would update managers before objects and so on;
         
-             world();
+             world(scene::scene & const);
              ~world();
     private:
         std::vector<object::object_mod*> object_list;

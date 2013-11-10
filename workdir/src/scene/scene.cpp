@@ -1,12 +1,14 @@
 #include<scene/scene.h>
 #include<cassert>
+#include<iostream>
+#include<string>
 
 using namespace std;
 namespace scene
 {
-    void scene::add(object::object_vis & const new_obj)
+    void scene::add(object::object_vis * const new_obj)
     {
-        object_list.push_back(&new_obj);
+        object_list.push_back(new_obj);
         ++list_size;
     }
 
@@ -37,10 +39,16 @@ namespace scene
 
     void scene::render()
     {
+        
         for (int i = 0; i < list_size; ++i)
         {
-            object_list[i]->render();
+            look temp = object_list[i]->render();
+            if (temp.is_visible)
+            {
+                //frame.drawFish(temp);
+            }
         }
+        
     }
 
     scene::scene()
