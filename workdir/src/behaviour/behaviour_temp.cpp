@@ -8,6 +8,7 @@ namespace behaviour
     {
         func = new_func;
     }
+    
     behaviour::~behaviour()
     {
 
@@ -16,5 +17,9 @@ namespace behaviour
     void behaviour::update(std::vector<object::object_mod*>& objects, std::map<object::object_mod*, object::controls*>& controls)
     {
         func(objects, controls);
+    }
+    void behaviour::update(object::dynamic_object*)
+    {
+        return;
     }
 }
