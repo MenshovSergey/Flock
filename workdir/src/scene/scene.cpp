@@ -45,15 +45,21 @@ namespace scene
             look temp = object_list[i]->render();
             if (temp.is_visible)
             {
-                //frame.drawFish(temp);
+                frame->drawFish(temp);
             }
         }
         
     }
+	
+	void scene::init(scene_3d & new_master)
+	{
+		frame = &new_master;
+	}
 
     scene::scene()
         : object_list(0)
         , list_size(0)
+		, frame (0)
     {
     }
 

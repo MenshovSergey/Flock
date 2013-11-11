@@ -8,16 +8,16 @@ class point_3d
 		double z;
 
 		point_3d();
-		point_3d(double new_x, double new_y, double new_z);
-        point_3d(point_3d& rhv);
-		point_3d operator+(point_3d& const second) const;
-		point_3d operator-(point_3d& const second) const;
-		point_3d operator*(double second) const;
-		point_3d operator/(double second) const;
-		point_3d& operator+=(point_3d& const second);
-		point_3d& operator-=(point_3d& const second);
-		point_3d& operator*=(double second);
-		point_3d& operator/=(double second);
+		point_3d(double const new_x, double const new_y, double const new_z);
+        point_3d(const point_3d& rhv);
+		point_3d operator+(const point_3d& second) const;
+		point_3d operator-(const point_3d& second) const;
+		point_3d operator*(double const second) const;
+		point_3d operator/(double const second) const;
+		point_3d& operator+=(const point_3d& second);
+		point_3d& operator-=(const point_3d& second);
+		point_3d& operator*=(double const second);
+		point_3d& operator/=(double const second);
 };
 
 

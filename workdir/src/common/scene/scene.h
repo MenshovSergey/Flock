@@ -1,7 +1,7 @@
 #pragma once
 #include <objects/object_vis_base.h>
 #include <scene/scene_base.h>
-//#include <scene3d/scene3d.h>
+#include <scene3d/scene3d.h>
 
 namespace scene
 {
@@ -25,12 +25,13 @@ struct scene
         void render   ();
         void obj_sort (); //i suppose we would update managers before objects and so on;
         
+	    void init (scene_3d & new_master);
              scene();
              ~scene();
     private:
         std::vector<object::object_vis*> object_list;
         size_t                           list_size;
-        //scene_3d                         frame;
+        scene_3d *                       frame;
 
 };
 

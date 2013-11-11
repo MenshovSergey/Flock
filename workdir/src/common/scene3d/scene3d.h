@@ -1,4 +1,6 @@
-﻿#include<containers/look.h>
+﻿#pragma once
+
+#include<containers/look.h>
 
 #include <qopengl.h>
 #include <QGLWidget>
