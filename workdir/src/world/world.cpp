@@ -17,13 +17,13 @@ namespace world
         --list_size;
     }
 
-    object::object_mod * const world::access  (size_t obj_id)
+    object::object_mod const * world::access  (size_t obj_id)
     {
         assert((0 <= obj_id) && (obj_id < list_size));
         return object_list[obj_id];
     }
 
-    vector<object::object_mod*> & const world::content()
+    vector<object::object_mod*> const & world::content()
     {
         return object_list;
     }
@@ -41,7 +41,7 @@ namespace world
         assert(0); //TODO: sort objects
     }
 
-    world::world(scene::scene & const new_visualisation)
+    world::world(scene::scene &  new_visualisation)
         : object_list(0)
         , list_size(0)
         , visualisation(new_visualisation)

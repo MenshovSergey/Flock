@@ -1,7 +1,7 @@
 #include<objects/dynamic_object.h>
 #include<objects/static_object.h>
 #include<objects/visual_object.h>
-#include<behaviour/behaviour.h>
+#include<behavior/behavior.h>
 #include<management/manager.h>
 #include<world/world.h>
 #include<scene/scene.h>
@@ -16,7 +16,8 @@ using namespace std;
 
 
 
-void homing(vector<object::object_mod*>& const objects, map<object::object_mod*, object::controls*>& controls)
+
+void homing(vector<object::object_mod*> const &  objects, map<object::object_mod*, object::controls*>& controls)
 {
     size_t size = objects.size();
     point_3d target;

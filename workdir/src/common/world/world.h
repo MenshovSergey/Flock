@@ -14,18 +14,18 @@ struct world
     , public semantic
 {
     public: //construction
-        void add           (object::object_mod * const) override;
+        void add           (object::object_mod *) override;
         void remove        (size_t) override;
 
     public: //info
-        object::object_mod *               const access  (size_t) override;
-        std::vector<object::object_mod*> & const content () override;
+        object::object_mod const *                access  (size_t) override;
+        std::vector<object::object_mod*> const &  content () override;
 
     public: //semantic
         void update   () override;
         void obj_sort () override; //i suppose we would update managers before objects and so on;
         
-             world(scene::scene & const);
+             world(scene::scene & );
              ~world();
     private:
         std::vector<object::object_mod*> object_list;

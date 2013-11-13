@@ -6,7 +6,7 @@ namespace scene
 
 struct construction
 {
-    virtual void add            (object::object_vis * const) = 0;
+    virtual void add            (object::object_vis * ) = 0;
     virtual void remove         (size_t) = 0;
     virtual      ~construction  () {};
 
@@ -14,8 +14,8 @@ struct construction
 
 struct info
 {
-    virtual object::object_vis &               const access  (size_t) = 0;
-    virtual std::vector<object::object_vis*> & const content () = 0;
+    virtual object::object_vis const &               access  (size_t) = 0;
+    virtual std::vector<object::object_vis*>const &  content () = 0;
     virtual                                          ~info () {};
 };
 

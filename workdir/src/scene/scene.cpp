@@ -6,7 +6,7 @@
 using namespace std;
 namespace scene
 {
-    void scene::add(object::object_vis * const new_obj)
+    void scene::add(object::object_vis *  new_obj)
     {
         object_list.push_back(new_obj);
         ++list_size;
@@ -18,13 +18,13 @@ namespace scene
         --list_size;
     }
 
-    object::object_vis & const scene::access  (size_t obj_id)
+    object::object_vis const & scene::access  (size_t obj_id)
     {
         assert((0 <= obj_id) && (obj_id < list_size));
         return *object_list[obj_id];
     }
 
-    vector<object::object_vis*> & const scene::content()
+    vector<object::object_vis*>const &  scene::content()
     {
         return object_list;
     }

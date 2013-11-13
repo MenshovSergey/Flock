@@ -2,7 +2,7 @@
 #include <objects/object_mod_base.h>
 #include <objects/object_base.h>
 #include <flock/flock.h>
-#include <behaviour/behaviour.h>
+#include <behavior/behavior.h>
 #include <vector>
 #include <map>
 
@@ -25,7 +25,7 @@ struct manager
         void      unreg         (object_mod*) override;
 
     public:
-        void      init          (behaviour::behaviour new_behaviour);
+        void      init          (behavior::behavior_old new_behaviour);
         void      deinit        ();
                   manager       (int object_type);
                   ~manager      ();
@@ -35,7 +35,7 @@ struct manager
         std::map<object_mod*, controls*> controlled;
         size_t                           reg_size;
         size_t                           cont_size;
-        behaviour::behaviour             b_func;
+        behavior::behavior_old           b_func;
         int                              obj_type;
 };
 

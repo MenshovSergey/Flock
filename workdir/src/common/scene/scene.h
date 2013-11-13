@@ -13,12 +13,12 @@ struct scene
     , public semantic
 {
     public: //construction
-        void add           (object::object_vis * const);
+        void add           (object::object_vis * );
         void remove        (size_t);
 
     public: //info
-        object::object_vis &               const access  (size_t);
-        std::vector<object::object_vis*> & const content ();
+        object::object_vis const &                access  (size_t);
+        std::vector<object::object_vis*> const &  content ();
 
     public: //semantic
         void update   ();

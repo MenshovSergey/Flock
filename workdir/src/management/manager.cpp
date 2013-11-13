@@ -48,7 +48,7 @@ namespace object
         {
             assert (0);
         }
-        void      manager::init (behaviour::behaviour new_behaviour)
+        void      manager::init (behavior::behavior_old new_behaviour)
         {
             b_func = new_behaviour;
         }

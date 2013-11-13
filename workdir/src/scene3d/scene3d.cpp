@@ -6,8 +6,8 @@
 #include <objects/static_object.h>
 #include <objects/visual_object.h>
 #include <management/manager.h>
-#include <behaviour/behaviour.h>
-#include<map>
+#include <behavior/behavior.h>
+#include <map>
 
 #include <QtGui>      // ïîäêëþ÷àåì ìîäóëü QtGui
 //#include <QtCore>     // ïîäêëþ÷àåì ìîäóëü QtCore
@@ -21,7 +21,7 @@ const static float pi=3.141593, k=pi/180; // ãëîáàëüíàÿ ïåðåìåí
 const static float inf = -1000000.0;
 double rtri = 0;
 
-void gravity_xyz(vector<object::object_mod*>& const objects, map<object::object_mod*, object::controls*>& controls)
+void gravity_xyz(vector<object::object_mod*> const & objects, map<object::object_mod*, object::controls*>& controls)
 {
     size_t size = objects.size();
     int x_lim = 1;
@@ -42,7 +42,7 @@ void gravity_xyz(vector<object::object_mod*>& const objects, map<object::object_
 
 scene::scene main_scene;
 world::world universe(main_scene);
-behaviour::behaviour gravity(&gravity_xyz);
+behavior::behavior_old gravity(&gravity_xyz);
 
 object::manager * gravity_man = new object::manager(0);
 object::dynamic_object * temp = new object::dynamic_object(1);

@@ -27,7 +27,7 @@ void flock::update ()
     {
         for (int j = 0; j < b_size; ++j)
         {
-            behaviors[j]->update(objects[i]);
+            behaviors[j]->apply(objects[i]);
         }
     }
 }
@@ -42,9 +42,9 @@ void flock::unreg (object_mod* new_object)
 
 }
 
-void flock::add_b (behaviour::behaviour& new_behavior)
+void flock::add_b (behavior::behavior_base* new_behavior)
 {
-    behaviors.push_back(&new_behavior);
+    behaviors.push_back(new_behavior);
     ++b_size;
 }
 void flock::rem_b ()
