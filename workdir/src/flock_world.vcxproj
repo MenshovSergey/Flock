@@ -37,17 +37,25 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;.\common</IncludePath>
     <OutDir>$(SolutionDir)\..\bin\$(Configuration)\</OutDir>
     <IntDir>\..\bin\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>\..\bin\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)\..\bin\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\common;$(QTSDK)\msvc2010\include\QtCore;$(QTSDK)\msvc2010\include\QtGui;$(QTSDK)\msvc2010\include\QtOpenGl;$(QTSDK)\msvc2010\include\</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(QTSDK)\msvc2010\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;QtGuid4.lib;QtCored4.lib;QtOpenGld4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -56,11 +64,16 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>.\common;$(QTSDK)\msvc2010\include\QtCore;$(QTSDK)\msvc2010\include\QtGui;$(QTSDK)\msvc2010\include\QtOpenGl;$(QTSDK)\msvc2010\include\</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;QtGui4.lib;QtCore4.lib;QtOpenGl4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTSDK)\msvc2010\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -86,17 +99,24 @@
     <ClInclude Include="common\objects\dynamic_object.h" />
     <ClInclude Include="common\objects\static_object.h" />
     <ClInclude Include="common\world\world.h" />
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="behaviour\behaviour_temp.cpp" />
+    <ClCompile Include="behavior\behavior_temp.cpp" />
+    <ClCompile Include="behavior\uniform_behavior.cpp" />
     <ClCompile Include="flock\flock.cpp" />
     <ClCompile Include="geometry\point_3d.cpp" />
     <ClCompile Include="main\main.cpp" />
     <ClCompile Include="management\manager.cpp" />
     <ClCompile Include="objects\dynamic_object.cpp" />
     <ClCompile Include="objects\static_object.cpp" />
+    <ClCompile Include="scene3d\scene3d.cpp" />
     <ClCompile Include="scene\scene.cpp" />
     <ClCompile Include="objects\visual_object.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="world\world.cpp" />
   </ItemGroup>
   <ItemGroup>

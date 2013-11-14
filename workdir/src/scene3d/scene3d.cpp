@@ -7,18 +7,12 @@
 #include <objects/visual_object.h>
 #include <management/manager.h>
 #include <behavior/behavior.h>
-#include <map>
 
-#include <QtGui>      // ïîäêëþ÷àåì ìîäóëü QtGui
-//#include <QtCore>     // ïîäêëþ÷àåì ìîäóëü QtCore
-//#include <QtOpenGL>   // ïîäêëþ÷àåì ìîäóëü QtOpenGL
-#include <qmath.h>     // ïîäêëþ÷àåì ìàòåìàòè÷åñêóþ áèáëèîòåêó
-#include <vector>
 
 using namespace std;
 
-const static float pi=3.141593, k=pi/180; // ãëîáàëüíàÿ ïåðåìåííàÿ
-const static float inf = -1000000.0;
+const static float pi=3.141593f, k=pi/180; // ãëîáàëüíàÿ ïåðåìåííàÿ
+const static float inf = -1000000.0f;
 double rtri = 0;
 
 void gravity_xyz(vector<object::object_mod*> const & objects, map<object::object_mod*, object::controls*>& controls)
@@ -121,7 +115,7 @@ void scene_3d::paintGL() // ðèñîâàíèå
         glEnable(GL_ALPHA_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    glClearColor(0.0, 0.0, 0.2, 0.0);
+	    glClearColor(0.0, 0.0, 0.2f, 0.0);
 		glClear(GL_COLOR_BUFFER_BIT);		
 		glLoadIdentity();	
 				
@@ -131,7 +125,7 @@ void scene_3d::paintGL() // ðèñîâàíèå
 		glColor4f(1.0, 0.0, 1,1);
 		
 		
-	for (int i = 0; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size(); i++)
 		{
 			x = objects[i].x - 1;
 			y = objects[i].y - 1;

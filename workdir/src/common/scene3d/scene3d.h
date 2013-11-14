@@ -2,7 +2,7 @@
 
 #include<containers/look.h>
 
-#include <qopengl.h>
+//#include <qopengl.h>
 #include <QGLWidget>
 #include <QtGui> 
 

@@ -1,6 +1,5 @@
 #include <management/manager.h>
 #include <objects/dynamic_object.h>
-#include <cassert>
 
 using namespace std;
 namespace object
@@ -40,7 +39,7 @@ namespace object
                     ++cont_size;
                 }
             }
-            catch (exception& e)
+            catch (exception& /*e*/)
             {
             }
         }

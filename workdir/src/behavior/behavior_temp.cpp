@@ -1,4 +1,3 @@
-#pragma once
 #include <behavior/behavior.h>
 
 using namespace std;

@@ -6,11 +6,6 @@
 #include<world/world.h>
 #include<scene/scene.h>
 #include<scene3d/scene3d.h>
-#include<QtWidgets/QApplication>
-#include<iostream>
-#include<Windows.h>
-#include<vector>
-#include<map>
 
 using namespace std;
 

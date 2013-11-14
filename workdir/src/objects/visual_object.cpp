@@ -1,5 +1,4 @@
 #include<objects/visual_object.h>
-#include<iostream>
 using namespace std;
 
 namespace object
