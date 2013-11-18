@@ -77,6 +77,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="common\behavior\behavior.h" />
+    <ClInclude Include="common\behavior\behavior_base.h" />
+    <ClInclude Include="common\behavior\behavior_pursuit.h" />
+    <ClInclude Include="common\behavior\behavior_seek.h" />
+    <ClInclude Include="common\behavior\uniform_behavior.h" />
     <ClInclude Include="common\behaviour\behaviour.h" />
     <ClInclude Include="common\containers\look.h" />
     <ClInclude Include="common\containers\state.h" />
@@ -102,6 +107,8 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="behavior\behavior_pursuit.cpp" />
+    <ClCompile Include="behavior\behavior_seek.cpp" />
     <ClCompile Include="behavior\behavior_temp.cpp" />
     <ClCompile Include="behavior\uniform_behavior.cpp" />
     <ClCompile Include="flock\flock.cpp" />

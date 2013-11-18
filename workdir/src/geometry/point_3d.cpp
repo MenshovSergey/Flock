@@ -73,6 +73,12 @@ point_3d& point_3d::operator/=(double second)
 	return *this;
 }
 
+point_3d point_3d::operator-() const
+{
+    point_3d res(-x, -y, -z);
+    return res;
+}
+
 
 double abs(point_3d a)
 {

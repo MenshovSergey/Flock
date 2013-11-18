@@ -18,6 +18,7 @@ class point_3d
 		point_3d& operator-=(const point_3d& second);
 		point_3d& operator*=(double const second);
 		point_3d& operator/=(double const second);
+        point_3d operator-() const;
 };
 
 
