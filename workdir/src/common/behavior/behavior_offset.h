@@ -11,9 +11,9 @@ namespace behavior
             void apply             (object::dynamic_object * obj) override;
             void init              (double new_offset);
                  
-                 behavior_pursuit  (object::object_mod * target);
-                 behavior_pursuit  (object::object_mod * target, double offset);
-                 ~behavior_pursuit ();
+                 behavior_offset  (object::object_mod * target);
+                 behavior_offset  (object::object_mod * target, double offset);
+                 ~behavior_offset ();
         private:
             object::object_mod * target_;
             double offset_;

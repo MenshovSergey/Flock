@@ -84,7 +84,10 @@ namespace object
             , model_vis()
             , is_visible(0)
         {
-
+            model_vis.v1.x = -1.;
+            model_vis.v2.x = 1.;
+            model_vis.v3.y = 2.;
+            model_vis.v4.z = 0.5;
         }
 
         visual_object::~visual_object()

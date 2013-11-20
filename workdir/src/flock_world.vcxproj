@@ -48,7 +48,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\common;$(QTSDK)\msvc2010\include\QtCore;$(QTSDK)\msvc2010\include\QtGui;$(QTSDK)\msvc2010\include\QtOpenGl;$(QTSDK)\msvc2010\include\;$(QTSDK)\msvc2010\include\QtWidgets</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\common;$(QTSDK)\msvc2010\include\QtCore;$(QTSDK)\msvc2010\include\QtGui;$(QTSDK)\msvc2010\include\QtOpenGl;$(QTSDK)\msvc2010\include\;$(QTSDK)\msvc2010\include\QtGui;$(QTSDK)\msvc2010\include\QtWidgets;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
@@ -79,6 +79,7 @@
   <ItemGroup>
     <ClInclude Include="common\behavior\behavior.h" />
     <ClInclude Include="common\behavior\behavior_base.h" />
+    <ClInclude Include="common\behavior\behavior_offset.h" />
     <ClInclude Include="common\behavior\behavior_pursuit.h" />
     <ClInclude Include="common\behavior\behavior_seek.h" />
     <ClInclude Include="common\behavior\uniform_behavior.h" />
@@ -107,6 +108,7 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="behavior\behavior_offset.cpp" />
     <ClCompile Include="behavior\behavior_pursuit.cpp" />
     <ClCompile Include="behavior\behavior_seek.cpp" />
     <ClCompile Include="behavior\behavior_temp.cpp" />

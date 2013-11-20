@@ -23,9 +23,9 @@ double rtri = 0;
 void gravity_xyz(vector<object::object_mod*> const & objects, map<object::object_mod*, object::controls*>& controls)
 {
     size_t size = objects.size();
-    int x_lim = 1;
-    int y_lim = 1;
-    int z_lim = 1;
+    int x_lim = 0;
+    int y_lim = 0;
+    int z_lim = 0;
     for (size_t i = 0; i < size; ++i)
     {
         if (controls.find(objects[i]) != controls.end())
@@ -58,7 +58,7 @@ point_3d rotate(point_3d a,double angle)
      return b;
 }
 
-std::vector<point_3d> objects;// конструктор класса scene_3d
+std::vector<look> objects;// конструктор класса scene_3d
 scene_3d::scene_3d(QWidget* parent/*= 0*/) 
     : QGLWidget(parent) 
     , course_(0)
@@ -78,8 +78,8 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 {
   glLoadIdentity();
     main_scene.init(*this);
-    point_3d t_coord(0,0,0);
-    point_3d t_speed(0,0,0);
+    point_3d t_coord(2,1,0);
+    point_3d t_speed(1,0,0);
     point_3d t_force(0,0,0);
     temp->init(t_coord, t_speed, t_force, 0.5, 0.1, 1, 1);
     temp->revisualise(vis);
@@ -112,7 +112,7 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         //glOrtho(-14*ratio, 14*ratio, -14, 14, -14.0, 1000.0);
-        glFrustum(-14*ratio, 14*ratio, -14, 14, 3.0, 1000.0);
+        glFrustum(-3*ratio, 3*ratio, -3, 3, 1.0, 1000.0);
     /*glMatrixMode(GL_PROJECTION); 
    glLoadIdentity();          
  
@@ -138,7 +138,7 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 
 /*virtual*/ void scene_3d::paintGL() // рисование
 {
-    double x,y,z;
+    //double x,y,z;
     
     glEnable(GL_ALPHA_TEST);
     glEnable(GL_BLEND);
@@ -168,16 +168,37 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
         
         //glColor4f(1.0, 0.0, 1,1);     
         
-        
+    point_3d vertex1, vertex2, vertex3, vertex4;
     for (int i = 0; i < objects.size(); i++)
     {
-        x = objects[i].x - 1;
-        y = objects[i].y - 1;
-        z = objects[i].z;            
+        glColor4f(1.0, 0.0, 1,1);
+
+        vertex1 = objects[i].coord + objects[i].v1;
+        vertex2 = objects[i].coord + objects[i].v2;
+        vertex3 = objects[i].coord + objects[i].v3;
+        vertex4 = objects[i].coord + objects[i].v4;
         glBegin(GL_TRIANGLES);
-            glVertex3f(x,y,z);
-            glVertex3f(x + 1, y + 1,z);
-            glVertex3f(x + 1,y - 1,z);
+            glVertex3f(vertex1.x,vertex1.y,vertex1.z);
+            glVertex3f(vertex2.x,vertex2.y,vertex2.z);
+            glVertex3f(vertex3.x,vertex3.y,vertex3.z);
+        glEnd();
+        glColor4f(1.0, 0.0, 0.,1);
+        glBegin(GL_TRIANGLES);
+            glVertex3f(vertex1.x,vertex1.y,vertex1.z);
+            glVertex3f(vertex2.x,vertex2.y,vertex2.z);
+            glVertex3f(vertex4.x,vertex4.y,vertex4.z);
+        glEnd();
+        glColor4f(0., 1, 1,1);
+        glBegin(GL_TRIANGLES);
+            glVertex3f(vertex1.x,vertex1.y,vertex1.z);
+            glVertex3f(vertex3.x,vertex3.y,vertex3.z);
+            glVertex3f(vertex4.x,vertex4.y,vertex4.z);
+        glEnd();
+        glColor4f(0., 0., 1,1);
+        glBegin(GL_TRIANGLES);
+            glVertex3f(vertex2.x,vertex2.y,vertex2.z);
+            glVertex3f(vertex3.x,vertex3.y,vertex3.z);
+            glVertex3f(vertex4.x,vertex4.y,vertex4.z);
         glEnd();
             
     }
@@ -315,12 +336,18 @@ void scene_3d::scale_minus() // удалиться от сцены
 
 void scene_3d::rotate_up() // повернуть сцену вверх
 {
-   pitch_ += 1.0;
+   if (pitch_ < 89.)
+   {
+       pitch_ += 1.0;
+   }
 }
 
 void scene_3d::rotate_down() // повернуть сцену вниз
 {
-   pitch_ -= 1.0;
+   if (pitch_ > -89.)
+   {
+       pitch_ -= 1.0;
+   }
 }
 
 void scene_3d::rotate_left() // повернуть сцену влево
@@ -350,7 +377,7 @@ void scene_3d::defaultScene() // наблюдение сцены по умолч
 
 void scene_3d::deleteFish(int number)
 {
-    vector<point_3d>::iterator del = objects.begin() + number;
+    vector<look>::iterator del = objects.begin() + number;
     objects.erase(del);
 }
 
@@ -365,7 +392,7 @@ void scene_3d::timerEvent(QTimerEvent * event)
 
 void scene_3d::drawFish(look fish_look)
 {
-    objects.push_back(fish_look.coord);
+    objects.push_back(fish_look);
  
     //updateGL();
 }
