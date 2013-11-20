@@ -25,7 +25,7 @@ struct scene
         void render   ();
         void obj_sort (); //i suppose we would update managers before objects and so on;
         
-	    void init (scene_3d & new_master);
+        void init (scene_3d & new_master);
              scene();
              ~scene();
     private:

@@ -3,7 +3,7 @@
 
 struct state_vis
 {
-	point_3d coord;
+    point_3d coord;
 
     state_vis()
         : coord()

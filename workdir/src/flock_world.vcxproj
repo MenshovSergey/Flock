@@ -38,7 +38,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\..\bin\$(Configuration)\</OutDir>
-    <IntDir>\..\bin\$(Configuration)\</IntDir>
+    <IntDir>..\bin\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IntDir>\..\bin\$(Configuration)\</IntDir>
@@ -48,14 +48,14 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\common;$(QTSDK)\msvc2010\include\QtCore;$(QTSDK)\msvc2010\include\QtGui;$(QTSDK)\msvc2010\include\QtOpenGl;$(QTSDK)\msvc2010\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\common;$(QTSDK)\msvc2010\include\QtCore;$(QTSDK)\msvc2010\include\QtGui;$(QTSDK)\msvc2010\include\QtOpenGl;$(QTSDK)\msvc2010\include\;$(QTSDK)\msvc2010\include\QtWidgets</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(QTSDK)\msvc2010\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;QtGuid4.lib;QtCored4.lib;QtOpenGld4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;QtGuid4.lib;QtCored4.lib;QtOpenGld4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

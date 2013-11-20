@@ -46,7 +46,7 @@ namespace behavior
 
     point_3d interpolation(object::object_mod * target, object::dynamic_object * obj)
     {
-        state target_state = target->get_state();
+        state target_state = target->get_state(); //UNDONE
         return target_state.coord;
     }
 

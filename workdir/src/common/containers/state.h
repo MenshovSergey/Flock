@@ -4,7 +4,7 @@
 struct state 
 {
     point_3d coord;
-	point_3d speed;
+    point_3d speed;
     //behavior_state behavior;
     //quaternion for orientation
     state()

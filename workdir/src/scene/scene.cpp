@@ -50,16 +50,16 @@ namespace scene
         }
         
     }
-	
-	void scene::init(scene_3d & new_master)
-	{
-		frame = &new_master;
-	}
+    
+    void scene::init(scene_3d & new_master)
+    {
+        frame = &new_master;
+    }
 
     scene::scene()
         : object_list(0)
         , list_size(0)
-		, frame (0)
+        , frame (0)
     {
     }
 

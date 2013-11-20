@@ -5,27 +5,18 @@
 namespace behavior
 {
     
-    class behavior_pursuit: public behavior_base
+    class behavior_offset: public behavior_base
     {
         public:
             void apply             (object::dynamic_object * obj) override;
+            void init              (double new_offset);
                  
                  behavior_pursuit  (object::object_mod * target);
+                 behavior_pursuit  (object::object_mod * target, double offset);
                  ~behavior_pursuit ();
         private:
             object::object_mod * target_;
-
-    };
-
-    class behavior_evade: public behavior_base
-    {
-        public:
-            void apply             (object::dynamic_object * obj) override;
-                 
-                 behavior_evade  (object::object_mod * target);
-                 ~behavior_evade ();
-        private:
-            object::object_mod * target_;
+            double offset_;
 
     };
 

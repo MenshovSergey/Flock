@@ -25,52 +25,52 @@ point_3d::point_3d(const point_3d& rhv)
 
 point_3d point_3d::operator+(const point_3d& second) const
 {
-	point_3d res(x + second.x, y + second.y, z + second.z);
-	return res;
+    point_3d res(x + second.x, y + second.y, z + second.z);
+    return res;
 }
 point_3d point_3d::operator-(const point_3d& second) const
 {
-	point_3d res(x - second.x, y - second.y, z - second.z);
-	return res;
+    point_3d res(x - second.x, y - second.y, z - second.z);
+    return res;
 }
 point_3d point_3d::operator*(double second) const
 {
-	point_3d res(x * second, y * second, z * second);
-	return res;
+    point_3d res(x * second, y * second, z * second);
+    return res;
 }
 point_3d point_3d::operator/(double second) const
 {
-	point_3d res(x / second, y / second, z / second);
-	return res;
+    point_3d res(x / second, y / second, z / second);
+    return res;
 }
 
 point_3d& point_3d::operator+=(const point_3d& second)
 {
-	x += second.x;
-	y += second.y;
-	z += second.z;
-	return *this;
+    x += second.x;
+    y += second.y;
+    z += second.z;
+    return *this;
 }
 point_3d& point_3d::operator-=(const point_3d& second)
 {
-	x -= second.x;
-	y -= second.y;
-	z -= second.z;
-	return *this;
+    x -= second.x;
+    y -= second.y;
+    z -= second.z;
+    return *this;
 }
 point_3d& point_3d::operator*=(double second)
 {
-	x *= second;
-	y *= second;
-	z *= second;
-	return *this;
+    x *= second;
+    y *= second;
+    z *= second;
+    return *this;
 }
 point_3d& point_3d::operator/=(double second)
 {
-	x /= second;
-	y /= second;
-	z /= second;
-	return *this;
+    x /= second;
+    y /= second;
+    z /= second;
+    return *this;
 }
 
 point_3d point_3d::operator-() const

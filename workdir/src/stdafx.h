@@ -11,3 +11,8 @@
 #include <qmath.h>
 #include <QtGui>
 #include <QApplication>
+#include <QGLWidget>
+#include <qtimer.h>
+//#include <qopengl.h>
+
+#include <gl\GLU.h>

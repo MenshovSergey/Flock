@@ -48,7 +48,7 @@ void homing(vector<object::object_mod*> const &  objects, map<object::object_mod
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-	scene_3d w;
-	w.show();
-	return a.exec();
+    scene_3d w;
+    w.show();
+    return a.exec();
 }
