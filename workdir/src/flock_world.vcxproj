@@ -79,6 +79,7 @@
   <ItemGroup>
     <ClInclude Include="common\behavior\behavior.h" />
     <ClInclude Include="common\behavior\behavior_base.h" />
+    <ClInclude Include="common\behavior\behavior_cohere.h" />
     <ClInclude Include="common\behavior\behavior_offset.h" />
     <ClInclude Include="common\behavior\behavior_pursuit.h" />
     <ClInclude Include="common\behavior\behavior_seek.h" />
@@ -108,6 +109,7 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="behavior\behavior_cohere.cpp" />
     <ClCompile Include="behavior\behavior_offset.cpp" />
     <ClCompile Include="behavior\behavior_pursuit.cpp" />
     <ClCompile Include="behavior\behavior_seek.cpp" />

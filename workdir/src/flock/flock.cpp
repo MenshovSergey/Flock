@@ -47,6 +47,18 @@ void flock::add_b (behavior::behavior_base* new_behavior)
     behaviors.push_back(new_behavior);
     ++b_size;
 }
+
+ vector<object_mod*> flock::get_members()
+ {
+     vector<object_mod*> result;
+     size_t size = objects.size();
+     for (size_t i = 0; i < size; ++i)
+     {
+         result.push_back(objects[i]);
+     }
+     return result;
+ }
+
 void flock::rem_b ()
 {
 

@@ -24,14 +24,15 @@ struct scene
         void update   ();
         void render   ();
         void obj_sort (); //i suppose we would update managers before objects and so on;
-        
+
         void init (scene_3d & new_master);
              scene();
              ~scene();
     private:
-        std::vector<object::object_vis*> object_list;
-        size_t                           list_size;
-        scene_3d *                       frame;
+        std::vector<object::object_vis*>       object_list;
+        std::map<object::object_vis *, look *> looks;
+        size_t                                list_size;
+        scene_3d *                             frame;
 
 };
 

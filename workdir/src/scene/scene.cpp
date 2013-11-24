@@ -9,6 +9,8 @@ namespace scene
     void scene::add(object::object_vis *  new_obj)
     {
         object_list.push_back(new_obj);
+        looks.insert(make_pair(new_obj, new look));
+        frame->add_object(looks[new_obj]); 
         ++list_size;
     }
 
@@ -39,18 +41,15 @@ namespace scene
 
     void scene::render()
     {
-        
+
         for (int i = 0; i < list_size; ++i)
         {
             look temp = object_list[i]->render();
-            if (temp.is_visible)
-            {
-                frame->drawFish(temp);
-            }
+            *looks[object_list[i]] = temp;
         }
-        
+
     }
-    
+
     void scene::init(scene_3d & new_master)
     {
         frame = &new_master;

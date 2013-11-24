@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 #include <objects/object_mod_base.h>
 #include <objects/dynamic_object.h>
 #include <behavior/behavior.h>
@@ -7,25 +7,26 @@
 namespace object
 {
 
-struct flock : public object_mod 
+struct flock : public object_mod
 {
     public: //info_mod
-        state     get_state     () override;
-        state_vis get_state_vis () override;
-        int       get_type      () override;
+        state               get_state     () override;
+        state_vis           get_state_vis () override;
+        int                 get_type      () override;
 
     public: //semantic
-        void      update        () override;
+        void                update        () override;
 
     public: //object_mod
-        void      reg           (object_mod*) override;
-        void      unreg         (object_mod*) override;
+        void                reg           (object_mod*) override;
+        void                unreg         (object_mod*) override;
 
     public:
-        void      add_b         (behavior::behavior_base* new_behavior);
-        void      rem_b         ();
-                  flock         (int object_type);
-                  ~flock        ();
+        std::vector<object_mod *> get_members   ();
+        void                add_b         (behavior::behavior_base* new_behavior);
+        void                rem_b         ();
+                            flock         (int object_type);
+                            ~flock        ();
 
     private:
         std::vector<dynamic_object*>          objects;

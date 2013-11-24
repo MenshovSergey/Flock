@@ -7,6 +7,8 @@
 #include <objects/visual_object.h>
 #include <management/manager.h>
 #include <behavior/behavior.h>
+#include <behavior/behavior_cohere.h>
+#include <behavior/behavior_seek.h>
 
 #include <qmath.h>     // подключаем математическую библиотеку
 #include <vector>
@@ -43,9 +45,12 @@ scene::scene main_scene;
 world::world universe(main_scene);
 behavior::behavior_old gravity(&gravity_xyz);
 
-object::manager * gravity_man = new object::manager(0);
-object::dynamic_object * temp = new object::dynamic_object(1);
-object::visual_object * vis = new object::visual_object;
+vector<object::dynamic_object *> temps;
+vector<object::visual_object *> viss;
+vector<object::dynamic_object *> temps2;
+vector<object::visual_object *> viss2;
+object::flock * main_flock = new object::flock(2);
+object::flock * second_flock = new object::flock(3);
 
 point_3d p(0,0,0);
 
@@ -58,54 +63,80 @@ point_3d rotate(point_3d a,double angle)
      return b;
 }
 
-std::vector<look> objects;// конструктор класса scene_3d
-scene_3d::scene_3d(QWidget* parent/*= 0*/) 
-    : QGLWidget(parent) 
+//std::vector<look> objects;// конструктор класса scene_3d
+
+scene_3d::scene_3d(QWidget* parent/*= 0*/)
+    : QGLWidget(parent)
     , course_(0)
     , pitch_(0)
     , range_(10)
-{    
-   xRot = 0; 
-   yRot = 0; 
-   zRot = 0; 
-   zTra = 0; 
-   nSca = 1; 
+{
+   xRot = 0;
+   yRot = 0;
+   zRot = 0;
+   zTra = 0;
+   nSca = 1;
    startTimer(40);
    // передает дальше указатель на объект parent
-} 
+}
 
 /*virtual*/ void scene_3d::initializeGL() // инициализация
 {
   glLoadIdentity();
     main_scene.init(*this);
-    point_3d t_coord(2,1,0);
-    point_3d t_speed(1,0,0);
+    point_3d t_speed(0.1,0,0);
     point_3d t_force(0,0,0);
-    temp->init(t_coord, t_speed, t_force, 0.5, 0.1, 1, 1);
-    temp->revisualise(vis);
+	temps.resize(100);
+	viss.resize(100);
+	temps2.resize(100);
+	viss2.resize(100);
+	point_3d target(0, 1, 0);
+	behavior::behavior_cohere * flocker = new behavior::behavior_cohere(2., 0.1);
+	behavior::behavior_cohere * flocker2 = new behavior::behavior_cohere(10., 0.01);
+	behavior::behavior_seek * seeker = new behavior::behavior_seek(target);
+	universe.add(main_flock);
+	universe.add(second_flock);
 
-    t_coord.x = 30;
-    t_coord.y = 30;
-    t_coord.z = 10;
-    object::static_object * st = new object::static_object(257);
-    st->init(t_coord, 1);
+	main_flock->add_b(flocker);
+	second_flock->add_b(flocker2);
+	for (int i = 0; i < temps.size(); ++i)
+	{
+	    temps[i] = new object::dynamic_object(0);
+		viss[i] = new object::visual_object;
 
-    vis->change_vis(true);
+		temps2[i] = new object::dynamic_object(0);
+		viss2[i] = new object::visual_object;
 
+		point_3d t_coord(i,sin(static_cast<double>(i)),cos(static_cast<double>(i)));
+        temps[i]->init(t_coord, t_speed, t_force, 5, 1, 1, 1);
+        temps[i]->revisualise(viss[i]);
+		viss[i]->change_vis(true);
+		main_flock->reg(temps[i]);
+		main_scene.add(viss[i]);
+        universe.add(temps[i]);
+
+	    point_3d t_coord2(-i * 10.,sin(static_cast<double>(i)),cos(static_cast<double>(i)));
+        temps2[i]->init(t_coord2, t_speed, t_force, 0.5, 0.1, 1, 1);
+        temps2[i]->revisualise(viss2[i]);
+		viss2[i]->change_vis(true);
+		second_flock->reg(temps2[i]);
+		main_scene.add(viss2[i]);
+        universe.add(temps2[i]);
+	}
+    flocker->init(main_flock->get_members());
+    flocker2->init(second_flock->get_members());
+    
+	/*
     gravity_man->init(gravity_xyz);
     gravity_man->reg(temp);
     gravity_man->reg(st);
+	*/
 
-    main_scene.add(vis);
-    universe.add(gravity_man);
-    universe.add(temp);
-    universe.add(st);
- 
 }
 
 
 /*virtual*/void scene_3d::resizeGL(int nWidth, int nHeight) // окно виджета
-{ 
+{
 
    glViewport(0, 0, nWidth, nHeight);
         double ratio = static_cast<double>(nWidth) / nHeight;
@@ -113,9 +144,9 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
         glLoadIdentity();
         //glOrtho(-14*ratio, 14*ratio, -14, 14, -14.0, 1000.0);
         glFrustum(-3*ratio, 3*ratio, -3, 3, 1.0, 1000.0);
-    /*glMatrixMode(GL_PROJECTION); 
-   glLoadIdentity();          
- 
+    /*glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+
    // отношение высоты окна виджета к его ширине
    GLfloat ratio=(GLfloat)nWidth/(GLfloat)nHeight;
    glOrtho(-2*ratio, 2*ratio, -10, 10, -1.0, 1.0);
@@ -123,15 +154,15 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
    // мировое окно
    if (nWidth>=nHeight)
       // параметры видимости ортогональной проекции
-      glOrtho(-100.0/ratio, 100.0/ratio, -100.0, 100.0, -1.0, 1); 
+      glOrtho(-100.0/ratio, 100.0/ratio, -100.0, 100.0, -1.0, 1);
    else
-      glOrtho(-100.0, 100.0, -100.0*ratio, 100.0*ratio, -1.0, 1);      
+      glOrtho(-100.0, 100.0, -100.0*ratio, 100.0*ratio, -1.0, 1);
    // плоскости отсечения (левая, правая, верхняя, нижняя, передняя, задняя)
-   
+
    // параметры видимости перспективной проекции
    // glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 10.0);
    // плоскости отсечения (левая, правая, верхняя, нижняя, ближняя, дальняя)
-  
+
    // поле просмотра*/
    //glViewport(0, 0, (GLint)nWidth, (GLint)nHeight);
 }
@@ -139,85 +170,91 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 /*virtual*/ void scene_3d::paintGL() // рисование
 {
     //double x,y,z;
+
+    //glEnable(GL_ALPHA_TEST);
     
-    glEnable(GL_ALPHA_TEST);
+	glEnable(GL_DEPTH_TEST);
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT);        
-
+    //glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();    
+    glLoadIdentity();
 
     glEnable(GL_COLOR_MATERIAL);
 
 
         //glScalef(nSca, nSca, nSca);        // масштабирование
-        //glTranslatef(0.0f, zTra, 0.0f);    // трансляция     
+        //glTranslatef(0.0f, zTra, 0.0f);    // трансляция
 
     gluLookAt(range_*sin(course_ * grad2rad)*cos(pitch_*grad2rad),range_*cos(course_ * grad2rad)*cos(pitch_*grad2rad),range_*sin(pitch_*grad2rad),
                 0,0,0,
                 0,0,1);
 
-/*        glRotatef(xRot, 1.0f, 0.0f, 0.0f); // поворот вокруг оси X         
+/*        glRotatef(xRot, 1.0f, 0.0f, 0.0f); // поворот вокруг оси X
         glRotatef(yRot, 0.0f, 1.0f, 0.0f); // поворот вокруг оси Y
         glRotatef(zRot, 0.0f, 0.0f, 1.0f);        */
-        
-        //rtri += 10;        
+
+        //rtri += 10;
         //glRotatef(-rtri,2.0,-3.0,1.0);
-        
-        //glColor4f(1.0, 0.0, 1,1);     
-        
+
+        //glColor4f(1.0, 0.0, 1,1);
+
     point_3d vertex1, vertex2, vertex3, vertex4;
     for (int i = 0; i < objects.size(); i++)
     {
-        glColor4f(1.0, 0.0, 1,1);
+        if (objects[i]->is_visible)
+        {
+            glColor4f(1.0, 0.0, 1,1);
 
-        vertex1 = objects[i].coord + objects[i].v1;
-        vertex2 = objects[i].coord + objects[i].v2;
-        vertex3 = objects[i].coord + objects[i].v3;
-        vertex4 = objects[i].coord + objects[i].v4;
-        glBegin(GL_TRIANGLES);
-            glVertex3f(vertex1.x,vertex1.y,vertex1.z);
-            glVertex3f(vertex2.x,vertex2.y,vertex2.z);
-            glVertex3f(vertex3.x,vertex3.y,vertex3.z);
-        glEnd();
-        glColor4f(1.0, 0.0, 0.,1);
-        glBegin(GL_TRIANGLES);
-            glVertex3f(vertex1.x,vertex1.y,vertex1.z);
-            glVertex3f(vertex2.x,vertex2.y,vertex2.z);
-            glVertex3f(vertex4.x,vertex4.y,vertex4.z);
-        glEnd();
-        glColor4f(0., 1, 1,1);
-        glBegin(GL_TRIANGLES);
-            glVertex3f(vertex1.x,vertex1.y,vertex1.z);
-            glVertex3f(vertex3.x,vertex3.y,vertex3.z);
-            glVertex3f(vertex4.x,vertex4.y,vertex4.z);
-        glEnd();
-        glColor4f(0., 0., 1,1);
-        glBegin(GL_TRIANGLES);
-            glVertex3f(vertex2.x,vertex2.y,vertex2.z);
-            glVertex3f(vertex3.x,vertex3.y,vertex3.z);
-            glVertex3f(vertex4.x,vertex4.y,vertex4.z);
-        glEnd();
-            
+            vertex1 = objects[i]->coord + objects[i]->v1;
+            vertex2 = objects[i]->coord + objects[i]->v2;
+            vertex3 = objects[i]->coord + objects[i]->v3;
+            vertex4 = objects[i]->coord + objects[i]->v4;
+            glBegin(GL_TRIANGLES);
+                glVertex3f(vertex1.x,vertex1.y,vertex1.z);
+                glVertex3f(vertex2.x,vertex2.y,vertex2.z);
+                glVertex3f(vertex3.x,vertex3.y,vertex3.z);
+            glEnd();
+            glColor4f(1.0, 0.0, 0.,1);
+            glBegin(GL_TRIANGLES);
+                glVertex3f(vertex1.x,vertex1.y,vertex1.z);
+                glVertex3f(vertex2.x,vertex2.y,vertex2.z);
+                glVertex3f(vertex4.x,vertex4.y,vertex4.z);
+            glEnd();
+            glColor4f(0., 1, 1,1);
+            glBegin(GL_TRIANGLES);
+                glVertex3f(vertex1.x,vertex1.y,vertex1.z);
+                glVertex3f(vertex3.x,vertex3.y,vertex3.z);
+                glVertex3f(vertex4.x,vertex4.y,vertex4.z);
+            glEnd();
+            glColor4f(0., 0., 1,1);
+            glBegin(GL_TRIANGLES);
+                glVertex3f(vertex2.x,vertex2.y,vertex2.z);
+                glVertex3f(vertex3.x,vertex3.y,vertex3.z);
+                glVertex3f(vertex4.x,vertex4.y,vertex4.z);
+            glEnd();
+        }
+
     }
-        
 
-    light();    
+
+    light();
 
     // draw cube
 /*    glPushMatrix();
-    rtri += 10;        
+    rtri += 10;
     glRotatef(-rtri,2.0,-3.0,1.0);
     drawQuads();
     glPopMatrix();*/
     //drawLines();
-    
-    //swapBuffers();     
 
-    objects.resize(0);    
-}  
+    //swapBuffers();
+
+    //objects.resize(0);
+}
 
 void scene_3d::light()
 {
@@ -252,75 +289,75 @@ void scene_3d::light()
 
 }
 
-/*virtual*/void scene_3d::mouseMoveEvent(QMouseEvent* pe) 
-{   
+/*virtual*/void scene_3d::mouseMoveEvent(QMouseEvent* pe)
+{
    // вычисление углов поворота
-   xRot += 180/nSca*(GLfloat)(pe->y()-ptrMousePosition.y())/height(); 
-   zRot += 180/nSca*(GLfloat)(pe->x()-ptrMousePosition.x())/width(); 
-   
+   xRot += 180/nSca*(GLfloat)(pe->y()-ptrMousePosition.y())/height();
+   zRot += 180/nSca*(GLfloat)(pe->x()-ptrMousePosition.x())/width();
+
    ptrMousePosition = pe->pos();
-   
+
    //updateGL(); // обновление изображения
 }
 
 /*virtual*/void scene_3d::mousePressEvent(QMouseEvent* pe) // нажатие клавиши мыши
 {
-   // при нажатии пользователем кнопки мыши переменной ptrMousePosition 
-   // будет присвоена координата указателя мыши 
-   ptrMousePosition = pe->pos();  
+   // при нажатии пользователем кнопки мыши переменной ptrMousePosition
+   // будет присвоена координата указателя мыши
+   ptrMousePosition = pe->pos();
 
-   // ptrMousePosition = (*pe).pos(); // можно и так написать                          
-} 
+   // ptrMousePosition = (*pe).pos(); // можно и так написать
+}
 
-/*virtual*/void scene_3d::keyPressEvent(QKeyEvent* pe) 
-{  
+/*virtual*/void scene_3d::keyPressEvent(QKeyEvent* pe)
+{
    switch (pe->key())
-   {         
-      case Qt::Key_Plus:  
+   {
+      case Qt::Key_Plus:
          scale_plus();     // приблизить сцену
       break;
-         
-      case Qt::Key_Equal:  
-         scale_plus();     // приблизить сцену   
+
+      case Qt::Key_Equal:
+         scale_plus();     // приблизить сцену
       break;
-         
-      case Qt::Key_Minus: 
+
+      case Qt::Key_Minus:
          scale_minus();    // удалиться от сцены
       break;
 
-      case Qt::Key_Up:  
+      case Qt::Key_Up:
          rotate_up();      // повернуть сцену вверх
       break;
-         
-      case Qt::Key_Down:  
+
+      case Qt::Key_Down:
          rotate_down();    // повернуть сцену вниз
-      break;         
-         
-      case Qt::Key_Left:  
+      break;
+
+      case Qt::Key_Left:
         rotate_left();     // повернуть сцену влево
       break;
-         
-      case Qt::Key_Right:  
+
+      case Qt::Key_Right:
          rotate_right();   // повернуть сцену вправо
-      break;                           
-         
+      break;
+
       case Qt::Key_PageDown:
          translate_down(); // транслировать сцену вниз
-      break;  
-         
+      break;
+
       case Qt::Key_PageUp:
          translate_up();   // транслировать сцену вверх
-      break; 
-         
+      break;
+
       case Qt::Key_Space:  // клавиша пробела
          defaultScene();   // возвращение значений по умолчанию
       break;
-      
+
       case Qt::Key_Escape: // клавиша "эскейп"
          this->close();    // завершает приложение
-      break;                                                           
+      break;
    }
-   
+
    //updateGL(); // обновление изображения
 }
 
@@ -329,7 +366,7 @@ void scene_3d::scale_plus() // приблизить сцену
    nSca = nSca*1.1;
 }
 
-void scene_3d::scale_minus() // удалиться от сцены 
+void scene_3d::scale_minus() // удалиться от сцены
 {
    nSca = nSca/1.1;
 }
@@ -377,7 +414,7 @@ void scene_3d::defaultScene() // наблюдение сцены по умолч
 
 void scene_3d::deleteFish(int number)
 {
-    vector<look>::iterator del = objects.begin() + number;
+    vector<look *>::iterator del = objects.begin() + number;
     objects.erase(del);
 }
 
@@ -390,69 +427,63 @@ void scene_3d::timerEvent(QTimerEvent * event)
     updateGL();
 }
 
-void scene_3d::drawFish(look fish_look)
-{
-    objects.push_back(fish_look);
- 
-    //updateGL();
-}
 
 void scene_3d::drawLines()
-{ 
-    
+{
+
     glColor4f(1, 1, 0,0.3);
-    glBegin(GL_LINES);//     
+    glBegin(GL_LINES);//
 
       glVertex3f(-posic,-posic,-posic);
       glVertex3f(posic,-posic,-posic);
 
     glEnd();
 
-    glBegin(GL_LINES);//     
+    glBegin(GL_LINES);//
 
       glVertex3f(-posic,-posic,-posic);
       glVertex3f(-posic, posic, -posic);
 
     glEnd();
 
-    glBegin(GL_LINES);//     
+    glBegin(GL_LINES);//
 
       glVertex3f(posic, posic,-posic);
       glVertex3f(posic,-posic,-posic);
 
     glEnd();
 
-    glBegin(GL_LINES);    // 
+    glBegin(GL_LINES);    //
 
       glVertex3f(posic,posic,-posic);
       glVertex3f(-posic, posic,-posic);
 
     glEnd();
 
-    glBegin(GL_LINES);//     
+    glBegin(GL_LINES);//
 
       glVertex3f(-posic,-posic,-posic);
       glVertex3f(posic,-posic,-posic);
 
     glEnd();
-    
 
-    glBegin(GL_LINES);//     
+
+    glBegin(GL_LINES);//
 
       glVertex3f(posic, posic,posic);
       glVertex3f(posic,-posic,posic);
 
     glEnd();
 
-    glBegin(GL_LINES);    // 
+    glBegin(GL_LINES);    //
 
       glVertex3f(posic, posic, posic);
       glVertex3f(-posic, posic,posic);
 
     glEnd();
-      
+
     glBegin(GL_LINES);
-      
+
       glVertex3f(-posic,posic,posic);
       glVertex3f(-posic,-posic,posic);
 
@@ -466,28 +497,28 @@ void scene_3d::drawLines()
 
 
     glBegin(GL_LINES);
-      
+
        glVertex3f(-posic,-posic,-posic);
        glVertex3f(-posic,-posic, posic);
 
     glEnd();
 
     glBegin(GL_LINES);
-      
+
        glVertex3f(posic, posic,-posic);
        glVertex3f(posic, posic, posic);
 
     glEnd();
 
     glBegin(GL_LINES);
-      
+
        glVertex3f(-posic, posic,-posic);
        glVertex3f(-posic, posic, posic);
 
     glEnd();
 
     glBegin(GL_LINES);
-      
+
        glVertex3f(posic, -posic,-posic);
        glVertex3f(posic, -posic, posic);
 
@@ -496,7 +527,7 @@ void scene_3d::drawLines()
 
 void scene_3d::drawQuads()
 {
-    glColor4f(1.0,1.0,0,0.3);    
+    glColor4f(1.0,1.0,0,0.3);
     glBegin(GL_QUADS);
       glVertex3f(-posic, -posic, -posic);
       glVertex3f(posic, -posic,  -posic);
@@ -531,7 +562,7 @@ void scene_3d::drawQuads()
       glVertex3f(-posic, posic,   posic);
       glVertex3f(-posic, posic,  -posic);
     glEnd();
-    
+
     glBegin(GL_QUADS);
       glVertex3f(posic, -posic, -posic);
       glVertex3f(posic, -posic,  posic);
@@ -540,6 +571,14 @@ void scene_3d::drawQuads()
     glEnd();
 }
 
+void scene_3d::add_object(look * new_object)
+{
+	objects.push_back(new_object);
+}
+void scene_3d::delete_object()
+{
+
+}
 
 ///////////////////////////////////////////////////////////////////////////
 
