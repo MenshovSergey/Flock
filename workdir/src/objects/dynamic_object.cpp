@@ -35,6 +35,10 @@ namespace object
         state_vis dynamic_object::get_state_vis()
         {
             state_vis result(coord);
+            double r = sqrt(coord.x * coord.x + coord.y * coord.y + coord.z * coord.z);
+            result.psi = asin(coord.z / r);
+            r =  sqrt(coord.x * coord.x + coord.y * coord.y);
+            result.phi = asin(coord.x / r);
             return result;
         }
 

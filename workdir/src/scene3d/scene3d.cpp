@@ -97,15 +97,21 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 	universe.add(main_flock);
 	universe.add(second_flock);
 
+    look model_vis;
+    model_vis.v1.x = -0.5;
+    model_vis.v2.x = 0.5;
+    model_vis.v3.y = 3.;
+    model_vis.v4.z = 0.5;
+
 	main_flock->add_b(flocker);
 	second_flock->add_b(flocker2);
 	for (int i = 0; i < temps.size(); ++i)
 	{
 	    temps[i] = new object::dynamic_object(0);
-		viss[i] = new object::visual_object;
+		viss[i] = new object::visual_object(model_vis);
 
 		temps2[i] = new object::dynamic_object(0);
-		viss2[i] = new object::visual_object;
+		viss2[i] = new object::visual_object(model_vis);
 
 		point_3d t_coord(i,sin(static_cast<double>(i)),cos(static_cast<double>(i)));
         temps[i]->init(t_coord, t_speed, t_force, 5, 1, 1, 1);
@@ -143,7 +149,7 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         //glOrtho(-14*ratio, 14*ratio, -14, 14, -14.0, 1000.0);
-        glFrustum(-3*ratio, 3*ratio, -3, 3, 1.0, 1000.0);
+        glFrustum(-10*ratio, 10*ratio, -10, 10, 20.0, 1000.0);
     /*glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
 

@@ -21,6 +21,7 @@ namespace object
         {
             owner = new_owner;
         }
+
         look visual_object::render()
         {
             look result(model_vis);
@@ -31,32 +32,22 @@ namespace object
             }
 
             result.is_visible = true;
-            result.coord = coord;
-            //TEMP CODE
-            /*int h = 25;
-            int w = 60;
-            char mesh = '+';
-            int pos_y = static_cast<int>(coord.y);
-            int pos_x = static_cast<int>(coord.x);
-            if ((pos_x < 0) || (pos_y < 0) || (pos_x >= w) || (pos_y >= h))
-            {
-                mesh = '.';
-            }
-            for (int j = 0; j < pos_y; ++j)
-            {
-                cout << "\n";
-            }
-            for (int k = 0; k < pos_x; ++k)
-            {
-                cout << " ";
-            }
-            cout << mesh;
-            cout << "\n";
-            for (int j = pos_y + 1; j < h; ++j)
-            {
-                cout << "\n";
-            }*/
+            result.v1.x = model_vis.v1.x * cos(psi) - model_vis.v1.z * sin(psi);
+            result.v1.y = model_vis.v1.y * cos(phi) + model_vis.v1.x * sin(phi);
+            result.v1.z = model_vis.v1.z * cos(psi) + model_vis.v1.x * sin(psi);
 
+            result.v2.x = model_vis.v2.x * cos(psi) - model_vis.v2.z * sin(psi);
+            result.v2.y = model_vis.v2.y * cos(phi) + model_vis.v2.x * sin(phi);
+            result.v2.z = model_vis.v2.z * cos(psi) + model_vis.v2.x * sin(psi);
+
+            result.v3.x = model_vis.v3.x * cos(psi) - model_vis.v3.z * sin(psi);
+            result.v3.y = model_vis.v3.y * cos(phi) + model_vis.v3.x * sin(phi);
+            result.v3.z = model_vis.v3.z * cos(psi) + model_vis.v3.x * sin(psi);
+
+            result.v4.x = model_vis.v4.x * cos(psi) - model_vis.v4.z * sin(psi);
+            result.v4.y = model_vis.v4.y * cos(phi) + model_vis.v4.x * sin(phi);
+            result.v4.z = model_vis.v4.z * cos(psi) + model_vis.v4.x * sin(psi);
+           
             return result;
             //^^TEMP CODE
             /*
@@ -72,6 +63,8 @@ namespace object
         {
             state_vis temp = owner->get_state_vis();
             coord = temp.coord;
+            phi = temp.phi;
+            psi = temp.psi;
         }
 
         void visual_object::move(point_3d new_coord)
@@ -88,6 +81,13 @@ namespace object
             model_vis.v2.x = 0.5;
             model_vis.v3.y = 3.;
             model_vis.v4.z = 0.5;
+        }
+
+         visual_object::visual_object(look new_model)
+            : coord(0,0,0)
+            , model_vis(new_model)
+            , is_visible(0)
+        {
         }
 
         visual_object::~visual_object()

@@ -45,10 +45,82 @@ void homing(vector<object::object_mod*> const &  objects, map<object::object_mod
     }
 }
 
+/////
+#include "boost/shared_ptr.hpp"
+#include "boost/make_shared.hpp"
+
+struct test_i
+{
+    virtual double get() const = 0;
+    virtual ~test_i() 
+    {
+        int i = 0;
+    }
+};
+
+typedef boost::shared_ptr<test_i> test_i_ptr;
+
+struct test_ii
+{
+    virtual void update() = 0;
+    virtual ~test_ii() {}
+};
+
+typedef boost::shared_ptr<test_ii> test_ii_ptr;
+
+
+struct test_obj: test_i, test_ii
+{
+    test_obj( double o )
+        : p_(o)
+    {}
+
+
+// test_i
+private:
+    double get() const override
+    {
+        return p_;
+    }
+
+// test_ii
+private:
+    void update() override {}
+
+private:
+    double p_;
+};
+
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     scene_3d w;
     w.show();
+
+
+/*    std::vector<test_i_ptr> test_;
+
+    test_.push_back(boost::make_shared<test_obj>(6));
+
+
+    test_i_ptr i_ptr = test_.front();
+
+    i_ptr->get();
+          
+//    test_i * i = &*i_ptr;
+
+    test_ii_ptr ii_ptr = boost::dynamic_pointer_cast<test_ii>(i_ptr);
+
+    ii_ptr->update();
+    */
+
+
+
+    test_i * A = new test_obj(8);
+    delete A;
+
+
+
     return a.exec();
 }
