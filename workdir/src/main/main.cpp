@@ -12,7 +12,7 @@ using namespace std;
 
 
 
-void homing(vector<object::object_mod*> const &  objects, map<object::object_mod*, object::controls*>& controls)
+/*void homing(vector<object::object_mod*> const &  objects, map<object::object_mod*, object::controls*>& controls)
 {
     size_t size = objects.size();
     point_3d target;
@@ -43,7 +43,7 @@ void homing(vector<object::object_mod*> const &  objects, map<object::object_mod
             (*controls.find(objects[i])).second->full_force(new_force);
         }
     }
-}
+}*/
 
 /////
 #include "boost/shared_ptr.hpp"

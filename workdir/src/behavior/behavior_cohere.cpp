@@ -14,7 +14,7 @@ using namespace std;
             {
                 point_3d v = (obj->get_state()).coord - (mates_[i]->get_state()).coord;
                 double r = abs(v);
-                temp += v / r * (1 / (r * r * r) - 1 / (r * r) * b_) * a_;
+                temp += v / r * (1 / (r * r * r) - 1 / r * b_ * b_) * a_;
             }
         }
         obj->set_force(temp);

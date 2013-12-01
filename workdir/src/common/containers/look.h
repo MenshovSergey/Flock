@@ -5,7 +5,7 @@ struct look
 {
     //here comes everything that forms visual representation of object
     double size;
-    int color;
+    point_3d color;
     bool is_visible;
     point_3d coord;
     point_3d v1;

@@ -84,7 +84,7 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 {
   glLoadIdentity();
     main_scene.init(*this);
-    point_3d t_speed(0.1,0,0);
+    point_3d t_speed(0,0,0);
     point_3d t_force(0,0,0);
 	temps.resize(100);
 	viss.resize(100);
@@ -98,10 +98,19 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 	universe.add(second_flock);
 
     look model_vis;
-    model_vis.v1.x = -0.5;
-    model_vis.v2.x = 0.5;
-    model_vis.v3.y = 3.;
+    model_vis.v1.y = -0.5;
+    model_vis.v2.y = 0.5;
+    model_vis.v3.x = 3.;
     model_vis.v4.z = 0.5;
+
+    look model_vis2 = model_vis;
+    model_vis.color.x = 1.;
+    model_vis.color.y = 0.5;
+    model_vis.color.z = 0.5;
+    model_vis2.color.x = 0;
+    model_vis2.color.y = .5;
+    model_vis2.color.z = .5;
+
 
 	main_flock->add_b(flocker);
 	second_flock->add_b(flocker2);
@@ -111,10 +120,10 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 		viss[i] = new object::visual_object(model_vis);
 
 		temps2[i] = new object::dynamic_object(0);
-		viss2[i] = new object::visual_object(model_vis);
+		viss2[i] = new object::visual_object(model_vis2);
 
 		point_3d t_coord(i,sin(static_cast<double>(i)),cos(static_cast<double>(i)));
-        temps[i]->init(t_coord, t_speed, t_force, 5, 1, 1, 1);
+        temps[i]->init(t_coord, t_speed, t_force, 3, 0.5, 1, 1);
         temps[i]->revisualise(viss[i]);
 		viss[i]->change_vis(true);
 		main_flock->reg(temps[i]);
@@ -213,30 +222,34 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
     {
         if (objects[i]->is_visible)
         {
-            glColor4f(1.0, 0.0, 1,1);
+            
 
             vertex1 = objects[i]->coord + objects[i]->v1;
             vertex2 = objects[i]->coord + objects[i]->v2;
             vertex3 = objects[i]->coord + objects[i]->v3;
             vertex4 = objects[i]->coord + objects[i]->v4;
+
+            glColor4f(objects[i]->color.x, objects[i]->color.y, objects[i]->color.z,1);
             glBegin(GL_TRIANGLES);
                 glVertex3f(vertex1.x,vertex1.y,vertex1.z);
                 glVertex3f(vertex2.x,vertex2.y,vertex2.z);
                 glVertex3f(vertex3.x,vertex3.y,vertex3.z);
             glEnd();
-            glColor4f(1.0, 0.0, 0.,1);
+
+            glColor4f(objects[i]->color.x * 0.9, objects[i]->color.y * 0.8, objects[i]->color.z * 0.8,1);
             glBegin(GL_TRIANGLES);
                 glVertex3f(vertex1.x,vertex1.y,vertex1.z);
                 glVertex3f(vertex2.x,vertex2.y,vertex2.z);
                 glVertex3f(vertex4.x,vertex4.y,vertex4.z);
             glEnd();
-            glColor4f(0., 1, 1,1);
+            
+            glColor4f(objects[i]->color.x * 0.6, objects[i]->color.y * 0.7, objects[i]->color.z * 0.6,1);
             glBegin(GL_TRIANGLES);
                 glVertex3f(vertex1.x,vertex1.y,vertex1.z);
                 glVertex3f(vertex3.x,vertex3.y,vertex3.z);
                 glVertex3f(vertex4.x,vertex4.y,vertex4.z);
             glEnd();
-            glColor4f(0., 0., 1,1);
+            glColor4f(objects[i]->color.x * 0.4, objects[i]->color.y * 0.4, objects[i]->color.z * 0.5,1);
             glBegin(GL_TRIANGLES);
                 glVertex3f(vertex2.x,vertex2.y,vertex2.z);
                 glVertex3f(vertex3.x,vertex3.y,vertex3.z);

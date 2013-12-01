@@ -1,6 +1,28 @@
 #include<objects/visual_object.h>
 using namespace std;
 
+namespace
+{
+    void count_radial_coord(point_3d coord, double & r, double & phi, double & psi)
+    {
+            r =  sqrt(coord.x * coord.x + coord.y * coord.y);
+            if (r > 0)
+            {
+                phi = acos(coord.x / r);
+            }
+            else
+            {
+                phi = 0;
+            }
+            if (coord.y < 0)
+            {
+                phi = -phi;
+            }
+            r = sqrt(coord.x * coord.x + coord.y * coord.y + coord.z * coord.z);
+            psi= asin(coord.z / r);
+    }
+}
+
 namespace object
 {
         void visual_object::init(point_3d new_coord)
@@ -32,30 +54,41 @@ namespace object
             }
 
             result.is_visible = true;
-            result.v1.x = model_vis.v1.x * cos(psi) - model_vis.v1.z * sin(psi);
-            result.v1.y = model_vis.v1.y * cos(phi) + model_vis.v1.x * sin(phi);
-            result.v1.z = model_vis.v1.z * cos(psi) + model_vis.v1.x * sin(psi);
 
-            result.v2.x = model_vis.v2.x * cos(psi) - model_vis.v2.z * sin(psi);
-            result.v2.y = model_vis.v2.y * cos(phi) + model_vis.v2.x * sin(phi);
-            result.v2.z = model_vis.v2.z * cos(psi) + model_vis.v2.x * sin(psi);
+            result.coord = coord;
 
-            result.v3.x = model_vis.v3.x * cos(psi) - model_vis.v3.z * sin(psi);
-            result.v3.y = model_vis.v3.y * cos(phi) + model_vis.v3.x * sin(phi);
-            result.v3.z = model_vis.v3.z * cos(psi) + model_vis.v3.x * sin(psi);
+            double t_r;
+            double t_phi;
+            double t_psi;
+            count_radial_coord(model_vis.v1, t_r, t_phi, t_psi); 
+            t_phi += phi;
+            t_psi += psi;
+            result.v1.x = t_r * cos(t_phi) * cos(t_psi);
+            result.v1.y = t_r * sin(t_phi) * cos(t_psi);
+            result.v1.z = t_r * sin(t_psi);
 
-            result.v4.x = model_vis.v4.x * cos(psi) - model_vis.v4.z * sin(psi);
-            result.v4.y = model_vis.v4.y * cos(phi) + model_vis.v4.x * sin(phi);
-            result.v4.z = model_vis.v4.z * cos(psi) + model_vis.v4.x * sin(psi);
+            count_radial_coord(model_vis.v2, t_r, t_phi, t_psi); 
+            t_phi += phi;
+            t_psi += psi;
+            result.v2.x = t_r * cos(t_phi) * cos(t_psi);
+            result.v2.y = t_r * sin(t_phi) * cos(t_psi);
+            result.v2.z = t_r * sin(t_psi);
+
+            count_radial_coord(model_vis.v3, t_r, t_phi, t_psi); 
+            t_phi += phi;
+            t_psi += psi;
+            result.v3.x = t_r * cos(t_phi) * cos(t_psi);
+            result.v3.y = t_r * sin(t_phi) * cos(t_psi);
+            result.v3.z = t_r * sin(t_psi);
+
+            count_radial_coord(model_vis.v4, t_r, t_phi, t_psi); 
+            t_phi += phi;
+            t_psi += psi;
+            result.v4.x = t_r * cos(t_phi) * cos(t_psi);
+            result.v4.y = t_r * sin(t_phi) * cos(t_psi);
+            result.v4.z = t_r * sin(t_psi);
            
             return result;
-            //^^TEMP CODE
-            /*
-             GET LOOK;
-             MOVE IT BY COORD;
-             TURN IT BY ORIENTATION;
-             PUT IT ON A SCREEN;
-            */
 
         }
 
