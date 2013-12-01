@@ -4,7 +4,7 @@
 using namespace std;
  namespace behavior
  {
-    void behavior_cohere::apply (object::dynamic_object * obj)
+    void behavior_cohere::apply (boost::shared_ptr<object::dynamic_object> obj)
     {
         size_t size = mates_.size();
         point_3d temp;
@@ -17,10 +17,10 @@ using namespace std;
                 temp += v / r * (1 / (r * r * r) - 1 / r * b_ * b_) * a_;
             }
         }
-        obj->set_force(temp);
+        obj->add_force(temp);
     }
 
-    void behavior_cohere::init (vector<object::object_mod *> const & mates)
+    void behavior_cohere::init (vector<boost::shared_ptr<object::object_mod> > const& mates)
     {
         mates_ = mates;
     }

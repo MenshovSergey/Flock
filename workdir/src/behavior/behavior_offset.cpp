@@ -1,10 +1,11 @@
 #include <behavior/behavior_offset.h>
-
+#include "typedef/typedef.h"
 namespace behavior
 {
-    void behavior_offset::apply(object::dynamic_object * obj)
+    void behavior_offset::apply(boost::shared_ptr<object::dynamic_object> obj)
     {
         state temp = obj->get_state();
+		
         state t_state = target_->get_state();
         point_3d to_object(t_state.coord.x - temp.coord.x, t_state.coord.y - temp.coord.y, t_state.coord.z - temp.coord.z);
         point_3d expect = interpolation(target_, obj);
@@ -28,12 +29,12 @@ namespace behavior
         offset_ = new_offset;
     }
 
-    behavior_offset::behavior_offset(object::object_mod * target)
+    behavior_offset::behavior_offset(boost::shared_ptr<object::object_mod>  target)
         : target_(target)
     {
     }
 
-    behavior_offset::behavior_offset(object::object_mod * target, double offset)
+    behavior_offset::behavior_offset(boost::shared_ptr<object::object_mod> target, double offset)
         : target_(target)
         , offset_(offset)
     {

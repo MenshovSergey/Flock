@@ -7,12 +7,16 @@ struct state_vis
     double phi;
     double psi;
     state_vis()
-        : coord()
+        : coord(0,0,0)
+		, phi(0)
+		, psi(0)
     {
     }
 
     state_vis(point_3d new_coord)
         : coord(new_coord)
+		, phi(0)
+		, psi(0)
     {
     }
     //quaternion for orientation

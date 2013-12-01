@@ -21,8 +21,8 @@ struct manager
         void      update        () override;
 
     public: //object_mod
-        void      reg           (object_mod*) override;
-        void      unreg         (object_mod*) override;
+        void      reg           (boost::shared_ptr<object_mod>) ;
+        void      unreg         (boost::shared_ptr<object_mod>) ;
 
     public:
         void      init          (behavior::behavior_old new_behaviour);
@@ -31,8 +31,8 @@ struct manager
                   ~manager      ();
 
     private:
-        std::vector<object_mod*>         registered;
-        std::map<object_mod*, controls*> controlled;
+        std::vector <boost::shared_ptr<object_mod>>         registered;
+        std::map<boost::shared_ptr<object_mod>, boost::shared_ptr<controls>> controlled;
         size_t                           reg_size;
         size_t                           cont_size;
         behavior::behavior_old           b_func;

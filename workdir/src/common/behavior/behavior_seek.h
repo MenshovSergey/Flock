@@ -7,7 +7,7 @@ namespace behavior
     class behavior_seek: public behavior_base
     {
         public:
-            void apply          (object::dynamic_object * obj) override;
+            void apply          (boost::shared_ptr<object::dynamic_object>  obj) override;
             void init           (point_3d new_target);
                  behavior_seek  (point_3d target);
                  ~behavior_seek ();
@@ -19,7 +19,7 @@ namespace behavior
     class behavior_flee: public behavior_base
     {
         public:
-            void apply          (object::dynamic_object * obj) override;
+            void apply          (boost::shared_ptr<object::dynamic_object> obj) override;
             void init           (point_3d new_target);
                  behavior_flee  (point_3d target);
                  ~behavior_flee ();

@@ -8,26 +8,26 @@ namespace behavior
     class behavior_pursuit: public behavior_base
     {
         public:
-            void apply             (object::dynamic_object * obj) override;
+            void apply             (boost::shared_ptr<object::dynamic_object>  obj) override;
                  
-                 behavior_pursuit  (object::object_mod * target);
+                 behavior_pursuit  (boost::shared_ptr<object::object_mod>  target);
                  ~behavior_pursuit ();
         private:
-            object::object_mod * target_;
+            boost::shared_ptr<object::object_mod>  target_;
 
     };
 
     class behavior_evade: public behavior_base
     {
         public:
-            void apply             (object::dynamic_object * obj) override;
+            void apply             (boost::shared_ptr<object::dynamic_object>  obj) override;
                  
-                 behavior_evade  (object::object_mod * target);
+                 behavior_evade  (boost::shared_ptr<object::object_mod>  target);
                  ~behavior_evade ();
         private:
-            object::object_mod * target_;
+            boost::shared_ptr<object::object_mod>  target_;
 
     };
 
-    point_3d interpolation(object::object_mod * target, object::dynamic_object * obj);
+    point_3d interpolation(boost::shared_ptr<object::object_mod>  target, boost::shared_ptr<object::dynamic_object> obj);
 } //behavior

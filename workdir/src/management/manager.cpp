@@ -1,6 +1,6 @@
 #include <management/manager.h>
 #include <objects/dynamic_object.h>
-
+#include "typedef/typedef.h"
 using namespace std;
 namespace object
 {
@@ -26,13 +26,13 @@ namespace object
             b_func.update(registered, controlled);
         }
 
-        void manager::reg (object_mod* new_object)
+        void manager::reg (boost::shared_ptr<object_mod> new_object)
         {
             registered.push_back (new_object);
             ++reg_size;
             try
-            {
-                controls * t_cont = dynamic_cast<controls *>(new_object);
+            {				
+                boost::shared_ptr<controls> t_cont = boost::dynamic_pointer_cast<controls>(new_object);
                 if (t_cont != 0)
                 {
                     controlled.insert(make_pair(new_object, t_cont));  // IS THIS CORRECT?!
@@ -43,9 +43,9 @@ namespace object
             {
             }
         }
-        void manager::unreg (object_mod*)
+        void manager::unreg (boost::shared_ptr<object_mod>)
         {
-            assert (0);
+            //assert (0);
         }
         void      manager::init (behavior::behavior_old new_behaviour)
         {

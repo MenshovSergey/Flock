@@ -20,17 +20,18 @@ class dynamic_object
 
     public : //controls
         void      set_force     (point_3d new_force) override;
+		void      add_force     (point_3d new_force) override;
         void      full_force    (point_3d dir_force) override;
 
     public : //object_mod
-        void      reg           (object_mod*) override;
-        void      unreg         (object_mod*) override;
+        void      reg           (boost::shared_ptr<object_mod>) override;
+        void      unreg         (boost::shared_ptr<object_mod>) override;
 
 
     public:
         void      init          (point_3d, point_3d, point_3d, double, double, double, double);
         void      deinit        ();
-        void      revisualise   (visual_object*);
+        void      revisualise   (boost::shared_ptr<visual_object>);
 
                   dynamic_object(int object_type);
                   ~dynamic_object();
@@ -43,7 +44,9 @@ class dynamic_object
         double         max_force;
         double         mass;
         double         radius;
-        visual_object* visualisation;
+		void           truncate_force();
+        boost::shared_ptr<visual_object> visualisation;
+		//visual_object * visualisation;
         int            obj_type;
         //quaternion for orientation
 };

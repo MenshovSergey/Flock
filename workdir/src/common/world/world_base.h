@@ -7,15 +7,15 @@ namespace world
 
 struct construction
 {
-    virtual void add           (object::object_mod *) = 0;
+    virtual void add           (myPtr<object::object_mod>::my_ptr ) = 0;
     virtual void remove        (size_t) = 0;
     virtual      ~construction () {};
 };
 
 struct info
 {
-    virtual object::object_mod const *               access  (size_t) = 0;
-    virtual std::vector<object::object_mod*> const & content () = 0;
+    virtual myPtr<object::object_mod>::my_ptr const                access  (size_t) = 0;
+    virtual std::vector<myPtr<object::object_mod>::my_ptr> const & content () = 0;
     virtual                                          ~info () {};
 };
 

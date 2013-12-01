@@ -10,13 +10,13 @@ namespace behavior
 
 class uniform_behavior: private behavior_base //applied to every object uniformly
 {
-         uniform_behavior(void (*func)(object::dynamic_object*));
+         uniform_behavior(void (*func)(boost::shared_ptr<object::dynamic_object>));
          ~uniform_behavior();
 
-    void apply (object::dynamic_object*) override;
+    void apply (boost::shared_ptr<object::dynamic_object>) override;
 
     private:
-        void (*func)(object::dynamic_object*);
+        void (*func)(boost::shared_ptr<object::dynamic_object>);
 };
 
 }

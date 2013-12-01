@@ -19,8 +19,8 @@ class static_object
         void      update        () override;
 
     public : //object_mod
-        void      reg           (object_mod*) override;
-        void      unreg         (object_mod*) override;
+        void      reg           (boost::shared_ptr<object_mod>) ;
+        void      unreg         (boost::shared_ptr<object_mod>) ;
 
     public: 
         void      init          (point_3d, double);
@@ -31,7 +31,7 @@ class static_object
     private:
         point_3d       coord;
         double         radius;
-        visual_object* visualisation;
+        boost::shared_ptr<visual_object> visualisation;
         int            obj_type;
         //quaternion for orientation
 };

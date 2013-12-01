@@ -18,20 +18,20 @@ struct flock : public object_mod
         void                update        () override;
 
     public: //object_mod
-        void                reg           (object_mod*) override;
-        void                unreg         (object_mod*) override;
+        void                reg           (boost::shared_ptr<object_mod>) override;
+        void                unreg         (boost::shared_ptr<object_mod>) override;
 
     public:
-        std::vector<object_mod *> get_members   ();
-        void                add_b         (behavior::behavior_base* new_behavior);
+        std::vector<boost::shared_ptr<object_mod>> get_members   ();
+        void                add_b         (boost::shared_ptr<behavior::behavior_base> new_behavior);
         void                rem_b         ();
                             flock         (int object_type);
                             ~flock        ();
 
     private:
-        std::vector<dynamic_object*>          objects;
+        std::vector<boost::shared_ptr<dynamic_object>>          objects;
         size_t                                o_size;
-        std::vector<behavior::behavior_base*> behaviors;
+        std::vector<boost::shared_ptr<behavior::behavior_base>> behaviors;
         size_t                                b_size;
         int                                   obj_type;
 };

@@ -24,16 +24,17 @@ namespace object
         void init          (point_3d);
         void deinit        ();
         void change_vis    (bool);
-        void giveown       (object_mod * const);
-             visual_object ();
+        //void giveown       (boost::shared_ptr<object_mod> const);
+		void giveown       (object_mod * const);
              visual_object (look new_model);
              ~visual_object();
     private:
         point_3d coord;
         //quaternion for orientation
         double phi;
-        double psi;
-        object_mod * owner;
+		double psi;
+        //boost::shared_ptr<object_mod>  owner;
+		object_mod * owner;
         look model_vis;
         bool is_visible;
 

@@ -23,6 +23,7 @@ namespace
     }
 }
 
+
 namespace object
 {
         void visual_object::init(point_3d new_coord)
@@ -39,7 +40,7 @@ namespace object
             is_visible = is_vis;
         }
 
-        void visual_object::giveown(object_mod * const new_owner)
+        void visual_object::giveown(object_mod *  const new_owner)
         {
             owner = new_owner;
         }
@@ -54,7 +55,6 @@ namespace object
             }
 
             result.is_visible = true;
-
             result.coord = coord;
 
             double t_r;
@@ -86,9 +86,16 @@ namespace object
             t_psi += psi;
             result.v4.x = t_r * cos(t_phi) * cos(t_psi);
             result.v4.y = t_r * sin(t_phi) * cos(t_psi);
-            result.v4.z = t_r * sin(t_psi);
-           
+            result.v4.z = t_r * sin(t_psi);            
+
             return result;
+            //^^TEMP CODE
+            /*
+             GET LOOK;
+             MOVE IT BY COORD;
+             TURN IT BY ORIENTATION;
+             PUT IT ON A SCREEN;
+            */
 
         }
 
@@ -96,8 +103,8 @@ namespace object
         {
             state_vis temp = owner->get_state_vis();
             coord = temp.coord;
-            phi = temp.phi;
-            psi = temp.psi;
+			phi = temp.phi;
+			psi = temp.psi;
         }
 
         void visual_object::move(point_3d new_coord)
@@ -105,21 +112,12 @@ namespace object
             coord = new_coord;
         }
 
-        visual_object::visual_object()
-            : coord(0,0,0)
-            , model_vis()
-            , is_visible(0)
-        {
-            model_vis.v1.x = -0.5;
-            model_vis.v2.x = 0.5;
-            model_vis.v3.y = 3.;
-            model_vis.v4.z = 0.5;
-        }
-
-         visual_object::visual_object(look new_model)
+        visual_object::visual_object(look new_model)
             : coord(0,0,0)
             , model_vis(new_model)
             , is_visible(0)
+			, phi(0)
+			, psi(0)
         {
         }
 

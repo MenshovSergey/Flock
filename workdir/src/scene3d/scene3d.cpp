@@ -8,7 +8,7 @@
 #include <management/manager.h>
 #include <behavior/behavior.h>
 #include <behavior/behavior_cohere.h>
-#include <behavior/behavior_seek.h>
+#include <behavior/behavior_pursuit.h>
 
 #include <qmath.h>     // подключаем математическую библиотеку
 #include <vector>
@@ -19,10 +19,11 @@ const static float pi=3.141593, k=pi/180; // глобальная перемен
 
 const static double grad2rad = pi/180.;
 const static float inf = -1000000.0;
-double posic = 7;
+double posic = 200;
 double rtri = 0;
 
-void gravity_xyz(vector<object::object_mod*> const & objects, map<object::object_mod*, object::controls*>& controls)
+void gravity_xyz(vector<boost::shared_ptr<object::object_mod>> const & objects, map<boost::shared_ptr<object::object_mod>, 
+	boost::shared_ptr<object::controls>>& controls)
 {
     size_t size = objects.size();
     int x_lim = 0;
@@ -45,13 +46,15 @@ scene::scene main_scene;
 world::world universe(main_scene);
 behavior::behavior_old gravity(&gravity_xyz);
 
-vector<object::dynamic_object *> temps;
-vector<object::visual_object *> viss;
-vector<object::dynamic_object *> temps2;
-vector<object::visual_object *> viss2;
-object::flock * main_flock = new object::flock(2);
-object::flock * second_flock = new object::flock(3);
-
+vector<boost::shared_ptr<object::dynamic_object> > temps;
+vector<boost::shared_ptr<object::visual_object> > viss;
+vector<boost::shared_ptr<object::dynamic_object> > temps2;
+vector<boost::shared_ptr<object::visual_object>> viss2;
+boost::shared_ptr<object::dynamic_object> target;
+//object::flock * main_flock = new object::flock(2);
+//object::flock * second_flock = new object::flock(3);
+boost::shared_ptr<object::flock> main_flock = boost::make_shared<object::flock>(2);
+boost::shared_ptr<object::flock> second_flock = boost::make_shared<object::flock>(3);
 point_3d p(0,0,0);
 
 point_3d rotate(point_3d a,double angle)
@@ -83,17 +86,16 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 /*virtual*/ void scene_3d::initializeGL() // инициализация
 {
   glLoadIdentity();
-    main_scene.init(*this);
+    main_scene.init(*this); //DONEEEEEEEEEEEEEEEEEEEE
     point_3d t_speed(0,0,0);
     point_3d t_force(0,0,0);
 	temps.resize(100);
 	viss.resize(100);
 	temps2.resize(100);
 	viss2.resize(100);
-	point_3d target(0, 1, 0);
-	behavior::behavior_cohere * flocker = new behavior::behavior_cohere(2., 0.1);
-	behavior::behavior_cohere * flocker2 = new behavior::behavior_cohere(10., 0.01);
-	behavior::behavior_seek * seeker = new behavior::behavior_seek(target);
+	boost::shared_ptr<behavior::behavior_cohere>  flocker = boost::make_shared< behavior::behavior_cohere>(15., 1);
+	boost::shared_ptr<behavior::behavior_cohere> flocker2 = boost::make_shared< behavior::behavior_cohere>(10., 0.01);
+
 	universe.add(main_flock);
 	universe.add(second_flock);
 
@@ -104,26 +106,62 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
     model_vis.v4.z = 0.5;
 
     look model_vis2 = model_vis;
-    model_vis.color.x = 1.;
-    model_vis.color.y = 0.5;
-    model_vis.color.z = 0.5;
-    model_vis2.color.x = 0;
+    model_vis.color.x = 0.9;
+    model_vis.color.y = 0.3;
+    model_vis.color.z = 0.6;
+    
+	model_vis2.color.x = 0;
     model_vis2.color.y = .5;
     model_vis2.color.z = .5;
 
+	look model_vis_target;
+	model_vis_target.v1.y = -2;
+	model_vis_target.v1.x = -2;
+	model_vis_target.v1.z = -1;
+
+    model_vis_target.v2.y = 2;
+	model_vis_target.v2.x = -2;
+	model_vis_target.v2.z = -1;
+
+    model_vis_target.v3.x = 2;
+	model_vis_target.v3.y = 0;
+	model_vis_target.v3.z = -1;
+
+    model_vis_target.v4.z = 3;
+	
+    model_vis_target.color.x = 1;
+    model_vis_target.color.y = 0;
+    model_vis_target.color.z = 0;
+
+
+    boost::shared_ptr<object::visual_object>  target_vis;
+	
+	target = boost::make_shared<object::dynamic_object>(19);
+    target_vis = boost::make_shared< object::visual_object>(model_vis_target);
+	boost::shared_ptr<behavior::behavior_pursuit>  seeker = boost::make_shared <behavior::behavior_pursuit>(target);
+
+
+	point_3d target_pos(0, 0, 0);
+
+	target->init(target_pos, target_pos,target_pos, 1, 0.5, 1, 1);
+	target->revisualise(target_vis);
+	target_vis->change_vis(true);
+	main_scene.add(target_vis);
+	universe.add(target);
 
 	main_flock->add_b(flocker);
+	main_flock->add_b(seeker);
 	second_flock->add_b(flocker2);
 	for (int i = 0; i < temps.size(); ++i)
 	{
-	    temps[i] = new object::dynamic_object(0);
-		viss[i] = new object::visual_object(model_vis);
+		temps[i] = boost::make_shared< object::dynamic_object>(0);
+		viss[i] = boost::make_shared< object::visual_object>(model_vis);
 
-		temps2[i] = new object::dynamic_object(0);
-		viss2[i] = new object::visual_object(model_vis2);
+		temps2[i] = boost::make_shared< object::dynamic_object>(0);
+		viss2[i] = boost::make_shared< object::visual_object>(model_vis2);
 
 		point_3d t_coord(i,sin(static_cast<double>(i)),cos(static_cast<double>(i)));
-        temps[i]->init(t_coord, t_speed, t_force, 3, 0.5, 1, 1);
+        temps[i]->init(t_coord, t_speed, t_force, 1, 0.3, 1, 1);
         temps[i]->revisualise(viss[i]);
 		viss[i]->change_vis(true);
 		main_flock->reg(temps[i]);
@@ -153,33 +191,14 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 /*virtual*/void scene_3d::resizeGL(int nWidth, int nHeight) // окно виджета
 {
 
-   glViewport(0, 0, nWidth, nHeight);
+      glViewport(0, 0, nWidth, nHeight);
         double ratio = static_cast<double>(nWidth) / nHeight;
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         //glOrtho(-14*ratio, 14*ratio, -14, 14, -14.0, 1000.0);
+
         glFrustum(-10*ratio, 10*ratio, -10, 10, 20.0, 1000.0);
-    /*glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-
-   // отношение высоты окна виджета к его ширине
-   GLfloat ratio=(GLfloat)nWidth/(GLfloat)nHeight;
-   glOrtho(-2*ratio, 2*ratio, -10, 10, -1.0, 1.0);
-   glMatrixMode(GL_MODELVIEW);
-   // мировое окно
-   if (nWidth>=nHeight)
-      // параметры видимости ортогональной проекции
-      glOrtho(-100.0/ratio, 100.0/ratio, -100.0, 100.0, -1.0, 1);
-   else
-      glOrtho(-100.0, 100.0, -100.0*ratio, 100.0*ratio, -1.0, 1);
-   // плоскости отсечения (левая, правая, верхняя, нижняя, передняя, задняя)
-
-   // параметры видимости перспективной проекции
-   // glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 10.0);
-   // плоскости отсечения (левая, правая, верхняя, нижняя, ближняя, дальняя)
-
-   // поле просмотра*/
-   //glViewport(0, 0, (GLint)nWidth, (GLint)nHeight);
+   
 }
 
 /*virtual*/ void scene_3d::paintGL() // рисование
@@ -203,9 +222,11 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 
         //glScalef(nSca, nSca, nSca);        // масштабирование
         //glTranslatef(0.0f, zTra, 0.0f);    // трансляция
-
-    gluLookAt(range_*sin(course_ * grad2rad)*cos(pitch_*grad2rad),range_*cos(course_ * grad2rad)*cos(pitch_*grad2rad),range_*sin(pitch_*grad2rad),
-                0,0,0,
+	state_vis center = target->get_state_vis();
+    gluLookAt(range_*sin(course_ * grad2rad)*cos(pitch_*grad2rad) + center.coord.x,
+		        range_*cos(course_ * grad2rad)*cos(pitch_*grad2rad) + center.coord.y,
+				range_*sin(pitch_*grad2rad) + center.coord.z,
+                center.coord.x, center.coord.y, center.coord.z,
                 0,0,1);
 
 /*        glRotatef(xRot, 1.0f, 0.0f, 0.0f); // поворот вокруг оси X
@@ -222,8 +243,6 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
     {
         if (objects[i]->is_visible)
         {
-            
-
             vertex1 = objects[i]->coord + objects[i]->v1;
             vertex2 = objects[i]->coord + objects[i]->v2;
             vertex3 = objects[i]->coord + objects[i]->v3;
@@ -263,12 +282,12 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
     light();
 
     // draw cube
-/*    glPushMatrix();
-    rtri += 10;
-    glRotatef(-rtri,2.0,-3.0,1.0);
+   glPushMatrix();
+    //rtri += 10;
+    //glRotatef(-rtri,2.0,-3.0,1.0);
     drawQuads();
-    glPopMatrix();*/
-    //drawLines();
+    glPopMatrix();
+    drawLines();
 
     //swapBuffers();
 
@@ -278,32 +297,32 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 void scene_3d::light()
 {
     glEnable(GL_LIGHTING);
-
-    /*GLfloat light1_diffuse[] = {1, 1, 1};
-    GLfloat light1_position[] = {0.0, 0.0, 0.0, 1.0};
+	state light_pos = target->get_state();
+    GLfloat light1_diffuse[] = {1, 1, 1};
+    GLfloat light1_position[] = {light_pos.coord.x, light_pos.coord.y, light_pos.coord.z, 1.0};
     glEnable(GL_LIGHT1);
     glLightfv(GL_LIGHT1, GL_AMBIENT, light1_diffuse);
     glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-    glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 0.0);
-    glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.2);
-    glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.0008);)*/
+    glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 1.0);
+    glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.0);
+    glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.0005);
 
     GLfloat light2_diffuse[] = {1, 1, 1};
     GLfloat light2_position[] = {(-posic - 1), -posic-1, (-posic - 1), 1};
     glEnable(GL_LIGHT2);
     glLightfv(GL_LIGHT2, GL_DIFFUSE, light2_diffuse);
     glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
-    glLightf(GL_LIGHT2, GL_CONSTANT_ATTENUATION, 0.0);
-    glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, 0.2);
+    glLightf(GL_LIGHT2, GL_CONSTANT_ATTENUATION, 1.0);
+    glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, 0.0);
     glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, 0.0008);
 
     GLfloat light3_diffuse[] = {1, 1, 1};
     GLfloat light3_position[] = {posic + 1, posic+1, posic + 1, 1.0};
     glEnable(GL_LIGHT3);
-    glLightfv(GL_LIGHT3, GL_DIFFUSE, light3_diffuse);
+    glLightfv(GL_LIGHT3, GL_AMBIENT, light3_diffuse);
     glLightfv(GL_LIGHT3, GL_POSITION, light3_position);
-    glLightf(GL_LIGHT3, GL_CONSTANT_ATTENUATION, 0.0);
-    glLightf(GL_LIGHT3, GL_LINEAR_ATTENUATION, 0.2);
+    glLightf(GL_LIGHT3, GL_CONSTANT_ATTENUATION, 1.0);
+    glLightf(GL_LIGHT3, GL_LINEAR_ATTENUATION, 0.0);
     glLightf(GL_LIGHT3, GL_QUADRATIC_ATTENUATION, 0.0008);
 
 }
@@ -433,13 +452,18 @@ void scene_3d::defaultScene() // наблюдение сцены по умолч
 
 void scene_3d::deleteFish(int number)
 {
-    vector<look *>::iterator del = objects.begin() + number;
-    objects.erase(del);
+	//vector<myPtr<look>::my_ptr >::iterator del = boost::make_shared<objects.begin() + number;
+    //objects.erase(del);
 }
 
 void scene_3d::timerEvent(QTimerEvent * event)
 {
     //angle += 1;
+
+	state_vis temp = target->get_state_vis();
+	double a = 1;
+    point_3d temp_force(a * cos(temp.coord.y), 0.9 * a * cos(temp.coord.z), a * cos(temp.coord.x)); 
+	target->set_force(temp_force);
     universe.update();
     main_scene.update();
     main_scene.render();
@@ -451,95 +475,97 @@ void scene_3d::drawLines()
 {
 
     glColor4f(1, 1, 0,0.3);
+	glLineWidth(10);
+	double l_posic = posic - 1;
     glBegin(GL_LINES);//
 
-      glVertex3f(-posic,-posic,-posic);
-      glVertex3f(posic,-posic,-posic);
+      glVertex3f(-l_posic,-l_posic,-l_posic);
+      glVertex3f(l_posic,-l_posic,-l_posic);
 
     glEnd();
 
     glBegin(GL_LINES);//
 
-      glVertex3f(-posic,-posic,-posic);
-      glVertex3f(-posic, posic, -posic);
+      glVertex3f(-l_posic,-l_posic,-l_posic);
+      glVertex3f(-l_posic, l_posic, -l_posic);
 
     glEnd();
 
     glBegin(GL_LINES);//
 
-      glVertex3f(posic, posic,-posic);
-      glVertex3f(posic,-posic,-posic);
+      glVertex3f(l_posic, l_posic,-l_posic);
+      glVertex3f(l_posic,-l_posic,-l_posic);
 
     glEnd();
 
     glBegin(GL_LINES);    //
 
-      glVertex3f(posic,posic,-posic);
-      glVertex3f(-posic, posic,-posic);
+      glVertex3f(l_posic,l_posic,-l_posic);
+      glVertex3f(-l_posic, l_posic,-l_posic);
 
     glEnd();
 
     glBegin(GL_LINES);//
 
-      glVertex3f(-posic,-posic,-posic);
-      glVertex3f(posic,-posic,-posic);
+      glVertex3f(-l_posic,-l_posic,-l_posic);
+      glVertex3f(l_posic,-l_posic,-l_posic);
 
     glEnd();
 
 
     glBegin(GL_LINES);//
 
-      glVertex3f(posic, posic,posic);
-      glVertex3f(posic,-posic,posic);
+      glVertex3f(l_posic, l_posic,l_posic);
+      glVertex3f(l_posic,-l_posic,l_posic);
 
     glEnd();
 
     glBegin(GL_LINES);    //
 
-      glVertex3f(posic, posic, posic);
-      glVertex3f(-posic, posic,posic);
+      glVertex3f(l_posic, l_posic, l_posic);
+      glVertex3f(-l_posic, l_posic,l_posic);
 
     glEnd();
 
     glBegin(GL_LINES);
 
-      glVertex3f(-posic,posic,posic);
-      glVertex3f(-posic,-posic,posic);
+      glVertex3f(-l_posic,l_posic,l_posic);
+      glVertex3f(-l_posic,-l_posic,l_posic);
 
     glEnd();
 
     glBegin(GL_LINES);
-      glVertex3f(posic, -posic, posic);
-      glVertex3f(-posic,-posic,posic);
+      glVertex3f(l_posic, -l_posic, l_posic);
+      glVertex3f(-l_posic,-l_posic,l_posic);
     glEnd();
 
 
 
     glBegin(GL_LINES);
 
-       glVertex3f(-posic,-posic,-posic);
-       glVertex3f(-posic,-posic, posic);
-
-    glEnd();
-
-    glBegin(GL_LINES);
-
-       glVertex3f(posic, posic,-posic);
-       glVertex3f(posic, posic, posic);
+       glVertex3f(-l_posic,-l_posic,-l_posic);
+       glVertex3f(-l_posic,-l_posic, l_posic);
 
     glEnd();
 
     glBegin(GL_LINES);
 
-       glVertex3f(-posic, posic,-posic);
-       glVertex3f(-posic, posic, posic);
+       glVertex3f(l_posic, l_posic,-l_posic);
+       glVertex3f(l_posic, l_posic, l_posic);
 
     glEnd();
 
     glBegin(GL_LINES);
 
-       glVertex3f(posic, -posic,-posic);
-       glVertex3f(posic, -posic, posic);
+       glVertex3f(-l_posic, l_posic,-l_posic);
+       glVertex3f(-l_posic, l_posic, l_posic);
+
+    glEnd();
+
+    glBegin(GL_LINES);
+
+       glVertex3f(l_posic, -l_posic,-l_posic);
+       glVertex3f(l_posic, -l_posic, l_posic);
 
     glEnd();
 }
@@ -590,7 +616,7 @@ void scene_3d::drawQuads()
     glEnd();
 }
 
-void scene_3d::add_object(look * new_object)
+void scene_3d::add_object(boost::shared_ptr<look>  new_object)
 {
 	objects.push_back(new_object);
 }

@@ -48,7 +48,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\ext\include;.\common;$(QTSDK)\msvc2010\include\QtCore;$(QTSDK)\msvc2010\include\QtGui;$(QTSDK)\msvc2010\include\QtOpenGl;$(QTSDK)\msvc2010\include\;$(QTSDK)\msvc2010\include\QtWidgets;$(BOOST_ROOT)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ext\include;.\common;$(QTSDK)\msvc2010\include\QtCore;$(QTSDK)\msvc2010\include\QtGui;$(QTSDK)\msvc2010\include\QtOpenGl;$(QTSDK)\msvc2010\include\;$(QTSDK)\msvc2010\include\QtWidgets</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
@@ -107,6 +107,7 @@
     <ClInclude Include="common\objects\static_object.h" />
     <ClInclude Include="common\world\world.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="common\typedef\typedef.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="behavior\behavior_cohere.cpp" />

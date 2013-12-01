@@ -1,7 +1,12 @@
 ﻿#pragma once
-
+#include <QtGui>  
+#include "typedef/typedef.h"
 #include <containers/look.h>
-
+#include <QtOpenGL\qgl.h>
+#include <gl\GL.h>
+#include <gl\GLU.h>
+#include <QGLWidget>
+#include <qwidget.h>
 
 using namespace std;
 // подключаем класс QGLWidget
@@ -38,14 +43,16 @@ public:
     void drawLines();
     void light();
     void drawQuads();
-    void add_object(look * new_object);
+    void add_object(boost::shared_ptr<look>  new_object);
     void delete_object();
 
-private:
+//private:
     double course_;
     double range_;
     double pitch_;
-    std::vector<look*> objects;
+    std::vector<boost::shared_ptr<look>> objects;
+    scene_3d(scene_3d const&){
+	}
 
     GLfloat xRot; // переменная хранит угол поворота вокруг оси X
     GLfloat yRot; // переменная хранит угол поворота вокруг оси Y

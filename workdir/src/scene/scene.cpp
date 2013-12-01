@@ -6,10 +6,10 @@
 using namespace std;
 namespace scene
 {
-    void scene::add(object::object_vis *  new_obj)
+    void scene::add(boost::shared_ptr<object::object_vis>   new_obj)
     {
         object_list.push_back(new_obj);
-        looks.insert(make_pair(new_obj, new look));
+		looks.insert(make_pair(new_obj, boost::make_shared <look>()));
         frame->add_object(looks[new_obj]); 
         ++list_size;
     }
@@ -26,7 +26,7 @@ namespace scene
         return *object_list[obj_id];
     }
 
-    vector<object::object_vis*>const &  scene::content()
+    vector<boost::shared_ptr<object::object_vis>>const &  scene::content()
     {
         return object_list;
     }
@@ -53,6 +53,7 @@ namespace scene
     void scene::init(scene_3d & new_master)
     {
         frame = &new_master;
+		//frame = boost::make_shared<scene_3d>(new_master);
     }
 
     scene::scene()

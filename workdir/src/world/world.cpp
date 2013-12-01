@@ -3,7 +3,7 @@
 using namespace std;
 namespace world
 {
-    void world::add(object::object_mod * const new_obj)
+    void world::add(boost::shared_ptr<object::object_mod>  const new_obj)
     {
         object_list.push_back(new_obj);
         ++list_size;
@@ -15,13 +15,13 @@ namespace world
         --list_size;
     }
 
-    object::object_mod const * world::access  (size_t obj_id)
+    boost::shared_ptr<object::object_mod> const  world::access  (size_t obj_id)
     {
         assert((0 <= obj_id) && (obj_id < list_size));
         return object_list[obj_id];
     }
 
-    vector<object::object_mod*> const & world::content()
+    vector<boost::shared_ptr<object::object_mod>> const & world::content()
     {
         return object_list;
     }
@@ -48,11 +48,11 @@ namespace world
 
     world::~world()
     {
-        for (size_t i = 0; i < list_size; ++i)
+        /*for (size_t i = 0; i < list_size; ++i)
         {
             delete(object_list[i]);
         }
-        delete(&visualisation);
+        delete(&visualisation);*/
     }
 
 } //world

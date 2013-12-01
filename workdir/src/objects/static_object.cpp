@@ -34,11 +34,11 @@ namespace object
         {
             return;
         }
-        void static_object::reg(object_mod* new_manager)
+        void static_object::reg(boost::shared_ptr<object_mod> new_manager)
         {
 
         }
-        void static_object::unreg(object_mod* new_manager)
+        void static_object::unreg(boost::shared_ptr<object_mod> new_manager)
         {
 
         }

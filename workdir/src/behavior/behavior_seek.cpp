@@ -3,7 +3,7 @@
 namespace behavior
 {
 
-    void behavior_seek::apply (object::dynamic_object * obj)
+    void behavior_seek::apply (boost::shared_ptr<object::dynamic_object>  obj)
     {
         state temp = obj->get_state();
         point_3d to_target(target_.x - temp.coord.x, target_.y - temp.coord.y, target_.z - temp.coord.z);
@@ -27,7 +27,7 @@ namespace behavior
     {
     }
 
-    void behavior_flee::apply (object::dynamic_object * obj)
+    void behavior_flee::apply (boost::shared_ptr<object::dynamic_object> obj)
     {
         state temp = obj->get_state();
         point_3d to_target(target_.x - temp.coord.x, target_.y - temp.coord.y, target_.z - temp.coord.z);

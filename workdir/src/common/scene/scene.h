@@ -2,7 +2,7 @@
 #include <objects/object_vis_base.h>
 #include <scene/scene_base.h>
 #include <scene3d/scene3d.h>
-
+#include "typedef/typedef.h"
 namespace scene
 {
 
@@ -13,12 +13,12 @@ struct scene
     , public semantic
 {
     public: //construction
-        void add           (object::object_vis * );
+        void add           (boost::shared_ptr<object::object_vis>  );
         void remove        (size_t);
 
     public: //info
         object::object_vis const &                access  (size_t);
-        std::vector<object::object_vis*> const &  content ();
+        std::vector<boost::shared_ptr<object::object_vis>> const &  content ();
 
     public: //semantic
         void update   ();
@@ -29,10 +29,11 @@ struct scene
              scene();
              ~scene();
     private:
-        std::vector<object::object_vis*>       object_list;
-        std::map<object::object_vis *, look *> looks;
+        std::vector<boost::shared_ptr<object::object_vis>>       object_list;
+        std::map<boost::shared_ptr<object::object_vis>, boost::shared_ptr<look> > looks;
         size_t                                list_size;
-        scene_3d *                             frame;
+        scene_3d * frame;
+		//boost::shared_ptr<scene_3d>                             frame;
 
 };
 

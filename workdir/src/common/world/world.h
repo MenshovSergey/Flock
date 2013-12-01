@@ -14,12 +14,12 @@ struct world
     , public semantic
 {
     public: //construction
-        void add           (object::object_mod *) override;
+        void add           (boost::shared_ptr<object::object_mod> ) ;
         void remove        (size_t) override;
 
     public: //info
-        object::object_mod const *                access  (size_t) override;
-        std::vector<object::object_mod*> const &  content () override;
+       boost::shared_ptr<object::object_mod> const                 access  (size_t) ;
+        std::vector<myPtr<object::object_mod>::my_ptr> const &  content () ;
 
     public: //semantic
         void update   () override;
@@ -28,7 +28,7 @@ struct world
              world(scene::scene & );
              ~world();
     private:
-        std::vector<object::object_mod*> object_list;
+        std::vector<boost::shared_ptr<object::object_mod>> object_list;
         size_t                           list_size;
         scene::scene &                   visualisation;
 
