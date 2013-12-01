@@ -48,13 +48,13 @@ behavior::behavior_old gravity(&gravity_xyz);
 
 vector<boost::shared_ptr<object::dynamic_object> > temps;
 vector<boost::shared_ptr<object::visual_object> > viss;
-vector<boost::shared_ptr<object::dynamic_object> > temps2;
-vector<boost::shared_ptr<object::visual_object>> viss2;
+//vector<boost::shared_ptr<object::dynamic_object> > temps2;
+//vector<boost::shared_ptr<object::visual_object>> viss2;
 boost::shared_ptr<object::dynamic_object> target;
 //object::flock * main_flock = new object::flock(2);
 //object::flock * second_flock = new object::flock(3);
 boost::shared_ptr<object::flock> main_flock = boost::make_shared<object::flock>(2);
-boost::shared_ptr<object::flock> second_flock = boost::make_shared<object::flock>(3);
+//boost::shared_ptr<object::flock> second_flock = boost::make_shared<object::flock>(3);
 point_3d p(0,0,0);
 
 point_3d rotate(point_3d a,double angle)
@@ -72,7 +72,7 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
     : QGLWidget(parent)
     , course_(0)
     , pitch_(0)
-    , range_(10)
+    , range_(40)
 {
    xRot = 0;
    yRot = 0;
@@ -91,13 +91,13 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
     point_3d t_force(0,0,0);
 	temps.resize(100);
 	viss.resize(100);
-	temps2.resize(100);
-	viss2.resize(100);
+	//temps2.resize(100);
+	//viss2.resize(100);
 	boost::shared_ptr<behavior::behavior_cohere>  flocker = boost::make_shared< behavior::behavior_cohere>(15., 1);
-	boost::shared_ptr<behavior::behavior_cohere> flocker2 = boost::make_shared< behavior::behavior_cohere>(10., 0.01);
+	//boost::shared_ptr<behavior::behavior_cohere> flocker2 = boost::make_shared< behavior::behavior_cohere>(10., 0.01);
 
 	universe.add(main_flock);
-	universe.add(second_flock);
+	//universe.add(second_flock);
 
     look model_vis;
     model_vis.v1.y = -0.5;
@@ -105,14 +105,15 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
     model_vis.v3.x = 3.;
     model_vis.v4.z = 0.5;
 
-    look model_vis2 = model_vis;
+    
     model_vis.color.x = 0.9;
     model_vis.color.y = 0.3;
     model_vis.color.z = 0.6;
     
+    /*look model_vis2 = model_vis;
 	model_vis2.color.x = 0;
     model_vis2.color.y = .5;
-    model_vis2.color.z = .5;
+    model_vis2.color.z = .5;*/
 
 	look model_vis_target;
 	model_vis_target.v1.y = -2;
@@ -128,6 +129,7 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 	model_vis_target.v3.z = -1;
 
     model_vis_target.v4.z = 3;
+    model_vis_target.v4.x = 0.5;
 	
     model_vis_target.color.x = 1;
     model_vis_target.color.y = 0;
@@ -143,7 +145,7 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 
 	point_3d target_pos(0, 0, 0);
 
-	target->init(target_pos, target_pos,target_pos, 1, 0.5, 1, 1);
+	target->init(target_pos, target_pos,target_pos, 4, 1, 1, 1);
 	target->revisualise(target_vis);
 	target_vis->change_vis(true);
 	main_scene.add(target_vis);
@@ -151,14 +153,14 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 
 	main_flock->add_b(flocker);
 	main_flock->add_b(seeker);
-	second_flock->add_b(flocker2);
+	//second_flock->add_b(flocker2);
 	for (int i = 0; i < temps.size(); ++i)
 	{
 		temps[i] = boost::make_shared< object::dynamic_object>(0);
 		viss[i] = boost::make_shared< object::visual_object>(model_vis);
 
-		temps2[i] = boost::make_shared< object::dynamic_object>(0);
-		viss2[i] = boost::make_shared< object::visual_object>(model_vis2);
+		//temps2[i] = boost::make_shared< object::dynamic_object>(0);
+		//viss2[i] = boost::make_shared< object::visual_object>(model_vis2);
 
 		point_3d t_coord(i,sin(static_cast<double>(i)),cos(static_cast<double>(i)));
         temps[i]->init(t_coord, t_speed, t_force, 1, 0.3, 1, 1);
@@ -168,16 +170,16 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 		main_scene.add(viss[i]);
         universe.add(temps[i]);
 
-	    point_3d t_coord2(-i * 10.,sin(static_cast<double>(i)),cos(static_cast<double>(i)));
+	    /*point_3d t_coord2(-i * 10.,sin(static_cast<double>(i)),cos(static_cast<double>(i)));
         temps2[i]->init(t_coord2, t_speed, t_force, 0.5, 0.1, 1, 1);
         temps2[i]->revisualise(viss2[i]);
 		viss2[i]->change_vis(true);
 		second_flock->reg(temps2[i]);
 		main_scene.add(viss2[i]);
-        universe.add(temps2[i]);
+        universe.add(temps2[i]);*/
 	}
     flocker->init(main_flock->get_members());
-    flocker2->init(second_flock->get_members());
+    //flocker2->init(second_flock->get_members());
     
 	/*
     gravity_man->init(gravity_xyz);
@@ -461,8 +463,8 @@ void scene_3d::timerEvent(QTimerEvent * event)
     //angle += 1;
 
 	state_vis temp = target->get_state_vis();
-	double a = 1;
-    point_3d temp_force(a * cos(temp.coord.y), 0.9 * a * cos(temp.coord.z), a * cos(temp.coord.x)); 
+	double a = 5;
+    point_3d temp_force(a * (cos(temp.coord.y) - 0.5 *temp.coord.x/posic), 0.9 * a * (cos(temp.coord.z) - 0.5 *temp.coord.y/posic), a * (cos(temp.coord.x) - 0.5 * temp.coord.z/posic)); 
 	target->set_force(temp_force);
     universe.update();
     main_scene.update();

@@ -53,6 +53,7 @@ namespace object
                 result.is_visible = false;
                 return result;
             }
+            look temp(model_vis);
 
             result.is_visible = true;
             result.coord = coord;
@@ -60,33 +61,58 @@ namespace object
             double t_r;
             double t_phi;
             double t_psi;
-            count_radial_coord(model_vis.v1, t_r, t_phi, t_psi); 
-            t_phi += phi;
-            t_psi += psi;
-            result.v1.x = t_r * cos(t_phi) * cos(t_psi);
-            result.v1.y = t_r * sin(t_phi) * cos(t_psi);
-            result.v1.z = t_r * sin(t_psi);
-
-            count_radial_coord(model_vis.v2, t_r, t_phi, t_psi); 
-            t_phi += phi;
-            t_psi += psi;
-            result.v2.x = t_r * cos(t_phi) * cos(t_psi);
-            result.v2.y = t_r * sin(t_phi) * cos(t_psi);
-            result.v2.z = t_r * sin(t_psi);
 
             count_radial_coord(model_vis.v3, t_r, t_phi, t_psi); 
-            t_phi += phi;
-            t_psi += psi;
-            result.v3.x = t_r * cos(t_phi) * cos(t_psi);
-            result.v3.y = t_r * sin(t_phi) * cos(t_psi);
-            result.v3.z = t_r * sin(t_psi);
 
-            count_radial_coord(model_vis.v4, t_r, t_phi, t_psi); 
+            temp.v1.x = result.v1.x * cos(-t_phi) - result.v1.y * sin(-t_phi);
+            temp.v1.y = result.v1.x * sin(-t_phi) + result.v1.y * cos(-t_phi); 
+            temp.v1.z = result.v1.z * cos(psi) + temp.v1.x * sin(psi);
+            temp.v1.x = temp.v1.x * cos(psi) - result.v1.z * sin(psi);
+
+
+            temp.v2.x = result.v2.x * cos(-t_phi) - result.v2.y * sin(-t_phi);
+            temp.v2.y = result.v2.x * sin(-t_phi) + result.v2.y * cos(-t_phi); 
+            temp.v2.z = result.v2.z * cos(psi) + temp.v2.x * sin(psi);
+            temp.v2.x = temp.v2.x * cos(psi) - result.v2.z * sin(psi);
+
+
+            temp.v3.x = result.v3.x * cos(-t_phi) - result.v3.y * sin(-t_phi);
+            temp.v3.y = result.v3.x * sin(-t_phi) + result.v3.y * cos(-t_phi); 
+            temp.v3.z = result.v3.z * cos(psi) + temp.v3.x * sin(psi);
+            temp.v3.x = temp.v3.x * cos(psi) - result.v3.z * sin(psi);
+            
+
+            temp.v4.x = result.v4.x * cos(-t_phi) - result.v4.y * sin(-t_phi);
+            temp.v4.y = result.v4.x * sin(-t_phi) + result.v4.y * cos(-t_phi); 
+            temp.v4.z = result.v4.z * cos(psi) + temp.v4.x * sin(psi);
+            temp.v4.x = temp.v4.x * cos(psi) - result.v4.z * sin(psi);
+
+
+            t_phi += phi;
+
+            result.v1.x = temp.v1.x * cos(t_phi) - temp.v1.y * sin(t_phi);
+            result.v1.y = temp.v1.y * cos(t_phi) + temp.v1.x * sin(t_phi);
+            result.v1.z = temp.v1.z;
+
+            result.v2.x = temp.v2.x * cos(t_phi) - temp.v2.y * sin(t_phi);
+            result.v2.y = temp.v2.y * cos(t_phi) + temp.v2.x * sin(t_phi);
+            result.v2.z = temp.v2.z;
+
+            result.v3.x = temp.v3.x * cos(t_phi) - temp.v3.y * sin(t_phi);
+            result.v3.y = temp.v3.y * cos(t_phi) + temp.v3.x * sin(t_phi);
+            result.v3.z = temp.v3.z;
+
+            result.v4.x = temp.v4.x * cos(t_phi) - temp.v4.y * sin(t_phi);
+            result.v4.y = temp.v4.y * cos(t_phi) + temp.v4.x * sin(t_phi);
+            result.v4.z = temp.v4.z;
+
+
+            /*count_radial_coord(model_vis.v4, t_r, t_phi, t_psi); 
             t_phi += phi;
             t_psi += psi;
             result.v4.x = t_r * cos(t_phi) * cos(t_psi);
             result.v4.y = t_r * sin(t_phi) * cos(t_psi);
-            result.v4.z = t_r * sin(t_psi);            
+            result.v4.z = t_r * sin(t_psi);    */        
 
             return result;
             //^^TEMP CODE
