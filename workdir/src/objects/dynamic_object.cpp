@@ -1,6 +1,6 @@
 #include <objects/dynamic_object.h>
 #include "typedef/typedef.h"
-#include "boost\weak_ptr.hpp
+#include "boost\weak_ptr.hpp"
 using namespace std;
 
 namespace object
@@ -104,8 +104,7 @@ namespace object
         {
 			//new_manager->unreg(this);
 			//new_manager->unreg(boost::make_shared<object::dynamic_object>(*this));
-            boost::weak_ptr a;
-            a->
+            //boost::weak_ptr a;
 			assert(0);
         }
 
