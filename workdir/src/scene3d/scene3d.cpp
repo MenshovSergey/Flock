@@ -23,7 +23,7 @@ const static double grad2rad = pi/180.;
 const static float inf = -1000000.0;
 double posic = 200;
 double rtri = 0;
-double target_speed = 5;
+double target_speed = 0.5;
 
 void gravity_xyz(vector<boost::shared_ptr<object::object_mod>> const & objects, map<boost::shared_ptr<object::object_mod>, 
 	boost::shared_ptr<object::controls>>& controls)
@@ -129,7 +129,9 @@ void scene_3d::initializeGL()
 
     // Create a tweak bar
     control_bar = TwNewBar("TweakBar");
-    
+    TwAddVarRW(control_bar, "target_speed", TW_TYPE_DOUBLE, &target_speed, 
+               " label='Target speed' help='' ");
+
     TwAddVarRW(control_bar, "add_flock_id", TW_TYPE_INT32, &new_flock_id, 
                " label='NewFlock ID' help='ID for flock you create' ");
 
@@ -137,35 +139,35 @@ void scene_3d::initializeGL()
     TwAddButton(control_bar, "text_new_look", NULL, NULL, " label='Protoype look:'");
     TwAddVarRW(control_bar, "prototype_vis", TW_TYPE_BOOL32, &prototype_look.is_visible, 
                " label='Is_visible' help='' ");
-    TwAddVarRW(control_bar, "prototype_color_r", TW_TYPE_FLOAT, &prototype_look.color.x, 
+    TwAddVarRW(control_bar, "prototype_color_r", TW_TYPE_DOUBLE, &prototype_look.color.x, 
                " label='Color R' help='' ");
-    TwAddVarRW(control_bar, "prototype_color_g", TW_TYPE_FLOAT, &prototype_look.color.y, 
+    TwAddVarRW(control_bar, "prototype_color_g", TW_TYPE_DOUBLE, &prototype_look.color.y, 
                " label='Color G' help='' ");
-    TwAddVarRW(control_bar, "prototype_color_b", TW_TYPE_FLOAT, &prototype_look.color.z, 
+    TwAddVarRW(control_bar, "prototype_color_b", TW_TYPE_DOUBLE, &prototype_look.color.z, 
                " label='Color B' help='' ");
-    TwAddVarRW(control_bar, "prototype_v1_x", TW_TYPE_FLOAT, &prototype_look.v1.x, 
+    TwAddVarRW(control_bar, "prototype_v1_x", TW_TYPE_DOUBLE, &prototype_look.v1.x, 
                " label='v1.x' help='' ");
-    TwAddVarRW(control_bar, "prototype_v1_y", TW_TYPE_FLOAT, &prototype_look.v1.y, 
+    TwAddVarRW(control_bar, "prototype_v1_y", TW_TYPE_DOUBLE, &prototype_look.v1.y, 
                " label='v1.y' help='' ");
-    TwAddVarRW(control_bar, "prototype_v1_z", TW_TYPE_FLOAT, &prototype_look.v1.z, 
+    TwAddVarRW(control_bar, "prototype_v1_z", TW_TYPE_DOUBLE, &prototype_look.v1.z, 
                " label='v1.z' help='' ");
-    TwAddVarRW(control_bar, "prototype_v2_x", TW_TYPE_FLOAT, &prototype_look.v2.x, 
+    TwAddVarRW(control_bar, "prototype_v2_x", TW_TYPE_DOUBLE, &prototype_look.v2.x, 
                " label='v2.x' help='' ");
-    TwAddVarRW(control_bar, "prototype_v2_y", TW_TYPE_FLOAT, &prototype_look.v2.y, 
+    TwAddVarRW(control_bar, "prototype_v2_y", TW_TYPE_DOUBLE, &prototype_look.v2.y, 
                " label='v2.y' help='' ");
-    TwAddVarRW(control_bar, "prototype_v2_z", TW_TYPE_FLOAT, &prototype_look.v2.z, 
+    TwAddVarRW(control_bar, "prototype_v2_z", TW_TYPE_DOUBLE, &prototype_look.v2.z, 
                " label='v2.z' help='' ");
-    TwAddVarRW(control_bar, "prototype_v3_x", TW_TYPE_FLOAT, &prototype_look.v3.x, 
+    TwAddVarRW(control_bar, "prototype_v3_x", TW_TYPE_DOUBLE, &prototype_look.v3.x, 
                " label='v3.x' help='' ");
-    TwAddVarRW(control_bar, "prototype_v3_y", TW_TYPE_FLOAT, &prototype_look.v3.y, 
+    TwAddVarRW(control_bar, "prototype_v3_y", TW_TYPE_DOUBLE, &prototype_look.v3.y, 
                " label='v3.y' help='' ");
-    TwAddVarRW(control_bar, "prototype_v3_z", TW_TYPE_FLOAT, &prototype_look.v3.z, 
+    TwAddVarRW(control_bar, "prototype_v3_z", TW_TYPE_DOUBLE, &prototype_look.v3.z, 
                " label='v3.z' help='' ");
-    TwAddVarRW(control_bar, "prototype_v4_x", TW_TYPE_FLOAT, &prototype_look.v4.x, 
+    TwAddVarRW(control_bar, "prototype_v4_x", TW_TYPE_DOUBLE, &prototype_look.v4.x, 
                " label='v4.x' help='' ");
-    TwAddVarRW(control_bar, "prototype_v4_y", TW_TYPE_FLOAT, &prototype_look.v4.y, 
+    TwAddVarRW(control_bar, "prototype_v4_y", TW_TYPE_DOUBLE, &prototype_look.v4.y, 
                " label='v4.y' help='' ");
-    TwAddVarRW(control_bar, "prototype_v4_z", TW_TYPE_FLOAT, &prototype_look.v4.z, 
+    TwAddVarRW(control_bar, "prototype_v4_z", TW_TYPE_DOUBLE, &prototype_look.v4.z, 
                " label='v4.z' help='' ");
 
     point_3d t_speed(0,0,0);
@@ -211,9 +213,10 @@ void scene_3d::initializeGL()
 	boost::shared_ptr<behavior::behavior_pursuit>  seeker = boost::make_shared <behavior::behavior_pursuit>(target);
 
 
-	point_3d target_pos(0, 0, 0);
+	point_3d target_pos(posic, posic, posic);
+    point_3d point_null(0, 0, 0);
 
-	target->init(target_pos, target_pos,target_pos, 4, 1, 1, 1);
+	target->init(target_pos, point_null, point_null, 4, 1, 1, 1);
 	target->revisualise(target_vis);
 	target_vis->change_vis(true);
     target_vis->change_rot(false);
@@ -278,10 +281,11 @@ void scene_3d::initializeGL()
         //glScalef(nSca, nSca, nSca);        // масштабирование
         //glTranslatef(0.0f, zTra, 0.0f);    // трансляция
 	state_vis center = target->get_state_vis();
-    gluLookAt(range_*sin(course_ * grad2rad)*cos(pitch_*grad2rad) + center.coord.x,
-		        range_*cos(course_ * grad2rad)*cos(pitch_*grad2rad) + center.coord.y,
-				range_*sin(pitch_*grad2rad) + center.coord.z,
-                center.coord.x, center.coord.y, center.coord.z,
+    gluLookAt(range_*sin(course_ * grad2rad)*cos(pitch_*grad2rad) /*+ center.coord.x*/,
+		        range_*cos(course_ * grad2rad)*cos(pitch_*grad2rad) /*+ center.coord.y*/,
+				range_*sin(pitch_*grad2rad) /*+ center.coord.z*/,
+                /*center.coord.x, center.coord.y, center.coord.z,*/
+                0, 0, 0,
                 0,0,1);
 
 /*        glRotatef(xRot, 1.0f, 0.0f, 0.0f); // поворот вокруг оси X
@@ -588,8 +592,10 @@ void scene_3d::timerEvent(QTimerEvent * event)
     //angle += 1;
 
 	state_vis temp = target->get_state_vis();
-    point_3d temp_force(target_speed * (cos(temp.coord.y) - 0.5 *temp.coord.x/posic), 0.9 * target_speed * (cos(temp.coord.z) - 0.5 *temp.coord.y/posic), target_speed * (cos(temp.coord.x) - 0.5 * temp.coord.z/posic)); 
-	target->set_force(temp_force);
+    //point_3d temp_force(target_speed * (cos(temp.coord.y) - 0.5 *temp.coord.x/posic), 0.9 * target_speed * (cos(temp.coord.z) - 0.5 *temp.coord.y/posic), target_speed * (cos(temp.coord.x) - 0.5 * temp.coord.z/posic)); 
+	//point_3d temp_force(target_speed * (- 0.5 * temp.coord.x/posic),  target_speed * (- 0.5 *temp.coord.y/posic), target_speed * (- 0.5 * temp.coord.z/posic)); 
+    point_3d temp_force(0,0,0);
+    target->set_force(temp_force);
     universe.update();
     main_scene.update();
     main_scene.render();

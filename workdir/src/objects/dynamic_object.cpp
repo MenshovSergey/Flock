@@ -1,5 +1,6 @@
 #include <objects/dynamic_object.h>
 #include "typedef/typedef.h"
+#include "boost\weak_ptr.hpp
 using namespace std;
 
 namespace object
@@ -103,6 +104,8 @@ namespace object
         {
 			//new_manager->unreg(this);
 			//new_manager->unreg(boost::make_shared<object::dynamic_object>(*this));
+            boost::weak_ptr a;
+            a->
 			assert(0);
         }
 
@@ -121,7 +124,7 @@ namespace object
             add_force(dir_force / abs(dir_force) * max_force);
         }
 
-
+                                    
         dynamic_object::dynamic_object(int object_type)
             : coord(0,0,0)
             , speed(0,0,0)
@@ -130,7 +133,7 @@ namespace object
             , max_force(0)
             , mass(0)
             , radius(0)
-            , visualisation(0)
+            //, visualisation(0)
             , obj_type(object_type)
         {
 

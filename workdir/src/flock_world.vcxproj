@@ -48,13 +48,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\ext\include;.\common;$(QTSDK)\msvc2010\include\QtCore;$(QTSDK)\msvc2010\include\QtGui;$(QTSDK)\msvc2010\include\QtOpenGl;$(QTSDK)\msvc2010\include\;$(QTSDK)\msvc2010\include\QtWidgets;$(BOOST_ROOT); $(ANT_TWEAK_BAR)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\..\ext\include;.\common;$(QTSDK)\msvc2010\include\QtCore;$(QTSDK)\msvc2010\include\QtGui;$(QTSDK)\msvc2010\include\QtOpenGl;$(QTSDK)\msvc2010\include\;$(QTSDK)\msvc2010\include\QtWidgets</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(QTSDK)\msvc2010\lib;$(ANT_TWEAK_BAR)\lib;%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTSDK)\msvc2010\lib;..\ext\lib\AntTweakBar;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glu32.lib;QtGuid4.lib;QtCored4.lib;QtOpenGld4.lib;AntTweakBar.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
