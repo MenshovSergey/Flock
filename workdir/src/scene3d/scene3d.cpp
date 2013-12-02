@@ -10,17 +10,20 @@
 #include <behavior/behavior_cohere.h>
 #include <behavior/behavior_pursuit.h>
 
-#include <qmath.h>     // подключаем математическую библиотеку
+#include <qmath.h>
 #include <vector>
 
 using namespace std;
 
-const static float pi=3.141593, k=pi/180; // глобальная переменная
+
+
+const static float pi=3.141593, k=pi/180;
 
 const static double grad2rad = pi/180.;
 const static float inf = -1000000.0;
 double posic = 200;
 double rtri = 0;
+double target_speed = 5;
 
 void gravity_xyz(vector<boost::shared_ptr<object::object_mod>> const & objects, map<boost::shared_ptr<object::object_mod>, 
 	boost::shared_ptr<object::controls>>& controls)
@@ -42,20 +45,52 @@ void gravity_xyz(vector<boost::shared_ptr<object::object_mod>> const & objects, 
     }
 }
 
+int new_flock_id;
+look prototype_look;
+TwBar * control_bar;
 scene::scene main_scene;
 world::world universe(main_scene);
 behavior::behavior_old gravity(&gravity_xyz);
 
 vector<boost::shared_ptr<object::dynamic_object> > temps;
 vector<boost::shared_ptr<object::visual_object> > viss;
-//vector<boost::shared_ptr<object::dynamic_object> > temps2;
-//vector<boost::shared_ptr<object::visual_object>> viss2;
+
 boost::shared_ptr<object::dynamic_object> target;
-//object::flock * main_flock = new object::flock(2);
-//object::flock * second_flock = new object::flock(3);
 boost::shared_ptr<object::flock> main_flock = boost::make_shared<object::flock>(2);
-//boost::shared_ptr<object::flock> second_flock = boost::make_shared<object::flock>(3);
+vector<boost::shared_ptr<object::flock> > all_flocks;
 point_3d p(0,0,0);
+
+namespace
+{
+    void TW_CALL ex_callback(void * clientData)
+    { 
+        target_speed ++;
+    }
+
+     void TW_CALL add_obj(void * clientData)
+    { 
+        int num = reinterpret_cast<int>(clientData);
+        boost::shared_ptr<object::dynamic_object> new_obj = boost::make_shared<object::dynamic_object>(0);
+        boost::shared_ptr<object::visual_object> new_vis = boost::make_shared< object::visual_object>(prototype_look);
+        point_3d temp(0,0,0.1);
+        new_obj->init(temp, temp, temp, 0.5, 1, 1, 1);
+	    new_obj->revisualise(new_vis);
+	    new_vis->change_vis(true);
+        all_flocks[num]->reg(new_obj);
+	    main_scene.add(new_vis);
+	    universe.add(new_obj);
+    }
+
+    void TW_CALL add_flock(void * clientData)
+    { 
+        all_flocks.push_back(boost::make_shared<object::flock>(new_flock_id));
+        universe.add(all_flocks[all_flocks.size() - 1] );
+
+        TwAddButton(control_bar, "flock_name", NULL, NULL, " label='Flock'");
+        TwAddButton(control_bar, "add_obj", add_obj, reinterpret_cast<void*>(all_flocks.size() - 1), " label='Add Object'");
+    }
+    //TwAddButton(bar, "Run", RunCB, NULL, " label='Run Forest' ");
+} //anonymous
 
 point_3d rotate(point_3d a,double angle)
 {
@@ -65,8 +100,6 @@ point_3d rotate(point_3d a,double angle)
     b.y = a.x * sin(angle) +a.y * cos(angle);
      return b;
 }
-
-//std::vector<look> objects;// конструктор класса scene_3d
 
 scene_3d::scene_3d(QWidget* parent/*= 0*/)
     : QGLWidget(parent)
@@ -80,41 +113,77 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
    zTra = 0;
    nSca = 1;
    startTimer(40);
-   // передает дальше указатель на объект parent
 }
 
-/*virtual*/ void scene_3d::initializeGL() // инициализация
+void scene_3d::initializeGL() 
 {
   glLoadIdentity();
     main_scene.init(*this); //DONEEEEEEEEEEEEEEEEEEEE
+
+    prototype_look.v1.y = -0.5;
+    prototype_look.v2.y = 0.5;
+    prototype_look.v3.x = 3.;
+    prototype_look.v4.z = 0.5;
+
+    TwInit(TW_OPENGL, NULL);
+
+    // Create a tweak bar
+    control_bar = TwNewBar("TweakBar");
+    
+    TwAddVarRW(control_bar, "add_flock_id", TW_TYPE_INT32, &new_flock_id, 
+               " label='NewFlock ID' help='ID for flock you create' ");
+
+    TwAddButton(control_bar, "add_flock_main", add_flock, NULL, " label='Add flock'");
+    TwAddButton(control_bar, "text_new_look", NULL, NULL, " label='Protoype look:'");
+    TwAddVarRW(control_bar, "prototype_vis", TW_TYPE_BOOL32, &prototype_look.is_visible, 
+               " label='Is_visible' help='' ");
+    TwAddVarRW(control_bar, "prototype_color_r", TW_TYPE_FLOAT, &prototype_look.color.x, 
+               " label='Color R' help='' ");
+    TwAddVarRW(control_bar, "prototype_color_g", TW_TYPE_FLOAT, &prototype_look.color.y, 
+               " label='Color G' help='' ");
+    TwAddVarRW(control_bar, "prototype_color_b", TW_TYPE_FLOAT, &prototype_look.color.z, 
+               " label='Color B' help='' ");
+    TwAddVarRW(control_bar, "prototype_v1_x", TW_TYPE_FLOAT, &prototype_look.v1.x, 
+               " label='v1.x' help='' ");
+    TwAddVarRW(control_bar, "prototype_v1_y", TW_TYPE_FLOAT, &prototype_look.v1.y, 
+               " label='v1.y' help='' ");
+    TwAddVarRW(control_bar, "prototype_v1_z", TW_TYPE_FLOAT, &prototype_look.v1.z, 
+               " label='v1.z' help='' ");
+    TwAddVarRW(control_bar, "prototype_v2_x", TW_TYPE_FLOAT, &prototype_look.v2.x, 
+               " label='v2.x' help='' ");
+    TwAddVarRW(control_bar, "prototype_v2_y", TW_TYPE_FLOAT, &prototype_look.v2.y, 
+               " label='v2.y' help='' ");
+    TwAddVarRW(control_bar, "prototype_v2_z", TW_TYPE_FLOAT, &prototype_look.v2.z, 
+               " label='v2.z' help='' ");
+    TwAddVarRW(control_bar, "prototype_v3_x", TW_TYPE_FLOAT, &prototype_look.v3.x, 
+               " label='v3.x' help='' ");
+    TwAddVarRW(control_bar, "prototype_v3_y", TW_TYPE_FLOAT, &prototype_look.v3.y, 
+               " label='v3.y' help='' ");
+    TwAddVarRW(control_bar, "prototype_v3_z", TW_TYPE_FLOAT, &prototype_look.v3.z, 
+               " label='v3.z' help='' ");
+    TwAddVarRW(control_bar, "prototype_v4_x", TW_TYPE_FLOAT, &prototype_look.v4.x, 
+               " label='v4.x' help='' ");
+    TwAddVarRW(control_bar, "prototype_v4_y", TW_TYPE_FLOAT, &prototype_look.v4.y, 
+               " label='v4.y' help='' ");
+    TwAddVarRW(control_bar, "prototype_v4_z", TW_TYPE_FLOAT, &prototype_look.v4.z, 
+               " label='v4.z' help='' ");
+
     point_3d t_speed(0,0,0);
     point_3d t_force(0,0,0);
 	temps.resize(100);
 	viss.resize(100);
-	//temps2.resize(100);
-	//viss2.resize(100);
+
 	boost::shared_ptr<behavior::behavior_cohere>  flocker = boost::make_shared< behavior::behavior_cohere>(15., 1);
-	//boost::shared_ptr<behavior::behavior_cohere> flocker2 = boost::make_shared< behavior::behavior_cohere>(10., 0.01);
 
 	universe.add(main_flock);
-	//universe.add(second_flock);
 
-    look model_vis;
-    model_vis.v1.y = -0.5;
-    model_vis.v2.y = 0.5;
-    model_vis.v3.x = 3.;
-    model_vis.v4.z = 0.5;
+    look model_vis = prototype_look;
 
-    
+   
     model_vis.color.x = 0.9;
     model_vis.color.y = 0.3;
     model_vis.color.z = 0.6;
     
-    /*look model_vis2 = model_vis;
-	model_vis2.color.x = 0;
-    model_vis2.color.y = .5;
-    model_vis2.color.z = .5;*/
-
 	look model_vis_target;
 	model_vis_target.v1.y = -2;
 	model_vis_target.v1.x = -2;
@@ -129,7 +198,6 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 	model_vis_target.v3.z = -1;
 
     model_vis_target.v4.z = 3;
-    model_vis_target.v4.x = 0.5;
 	
     model_vis_target.color.x = 1;
     model_vis_target.color.y = 0;
@@ -148,19 +216,16 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 	target->init(target_pos, target_pos,target_pos, 4, 1, 1, 1);
 	target->revisualise(target_vis);
 	target_vis->change_vis(true);
+    target_vis->change_rot(false);
 	main_scene.add(target_vis);
 	universe.add(target);
 
 	main_flock->add_b(flocker);
 	main_flock->add_b(seeker);
-	//second_flock->add_b(flocker2);
 	for (int i = 0; i < temps.size(); ++i)
 	{
 		temps[i] = boost::make_shared< object::dynamic_object>(0);
 		viss[i] = boost::make_shared< object::visual_object>(model_vis);
-
-		//temps2[i] = boost::make_shared< object::dynamic_object>(0);
-		//viss2[i] = boost::make_shared< object::visual_object>(model_vis2);
 
 		point_3d t_coord(i,sin(static_cast<double>(i)),cos(static_cast<double>(i)));
         temps[i]->init(t_coord, t_speed, t_force, 1, 0.3, 1, 1);
@@ -170,24 +235,12 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
 		main_scene.add(viss[i]);
         universe.add(temps[i]);
 
-	    /*point_3d t_coord2(-i * 10.,sin(static_cast<double>(i)),cos(static_cast<double>(i)));
-        temps2[i]->init(t_coord2, t_speed, t_force, 0.5, 0.1, 1, 1);
-        temps2[i]->revisualise(viss2[i]);
-		viss2[i]->change_vis(true);
-		second_flock->reg(temps2[i]);
-		main_scene.add(viss2[i]);
-        universe.add(temps2[i]);*/
 	}
     flocker->init(main_flock->get_members());
-    //flocker2->init(second_flock->get_members());
-    
-	/*
-    gravity_man->init(gravity_xyz);
-    gravity_man->reg(temp);
-    gravity_man->reg(st);
-	*/
 
 }
+
+
 
 
 /*virtual*/void scene_3d::resizeGL(int nWidth, int nHeight) // окно виджета
@@ -200,7 +253,7 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
         //glOrtho(-14*ratio, 14*ratio, -14, 14, -14.0, 1000.0);
 
         glFrustum(-10*ratio, 10*ratio, -10, 10, 20.0, 1000.0);
-   
+      TwWindowSize(nWidth, nHeight);
 }
 
 /*virtual*/ void scene_3d::paintGL() // рисование
@@ -291,6 +344,8 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
     glPopMatrix();
     drawLines();
 
+    TwDraw();
+
     //swapBuffers();
 
     //objects.resize(0);
@@ -336,7 +391,7 @@ void scene_3d::light()
    zRot += 180/nSca*(GLfloat)(pe->x()-ptrMousePosition.x())/width();
 
    ptrMousePosition = pe->pos();
-
+   TwMouseMotion(pe->x(), pe->y());
    //updateGL(); // обновление изображения
 }
 
@@ -345,59 +400,129 @@ void scene_3d::light()
    // при нажатии пользователем кнопки мыши переменной ptrMousePosition
    // будет присвоена координата указателя мыши
    ptrMousePosition = pe->pos();
+   TwMouseMotion(pe->x(), pe->y());
+   TwMouseAction act;
+   act = TW_MOUSE_PRESSED;
+   TwMouseButtonID id;
+   if (pe->button() == Qt::LeftButton)
+   {
+       id = TW_MOUSE_LEFT;
+   }
+   if (pe->button() == Qt::RightButton)
+   {
+       id = TW_MOUSE_RIGHT;
+   }
+   if (pe->button() == Qt::MiddleButton)
+   {
+       id = TW_MOUSE_MIDDLE;
+   }
+   rtri = pe->buttons();
+   TwMouseButton(act,id);
+   // ptrMousePosition = (*pe).pos(); // можно и так написать
+}
 
+void scene_3d::mouseReleaseEvent(QMouseEvent* pe) 
+{
+   ptrMousePosition = pe->pos();
+   TwMouseMotion(pe->x(), pe->y());
+   TwMouseAction act;
+   act = TW_MOUSE_RELEASED;
+   TwMouseButtonID id;
+   if (pe->button() == Qt::LeftButton)
+   {
+       id = TW_MOUSE_LEFT;
+   }
+   if (pe->button() == Qt::RightButton)
+   {
+       id = TW_MOUSE_RIGHT;
+   }
+   if (pe->button() == Qt::MiddleButton)
+   {
+       id = TW_MOUSE_MIDDLE;
+   }
+   rtri = pe->buttons();
+   TwMouseButton(act,id);
    // ptrMousePosition = (*pe).pos(); // можно и так написать
 }
 
 /*virtual*/void scene_3d::keyPressEvent(QKeyEvent* pe)
 {
-   switch (pe->key())
-   {
-      case Qt::Key_Plus:
-         scale_plus();     // приблизить сцену
-      break;
+    Qt::KeyboardModifiers mod_inc = pe->modifiers();
+    int mod_out = TW_KMOD_NONE;
 
-      case Qt::Key_Equal:
-         scale_plus();     // приблизить сцену
-      break;
+    if ((mod_inc & Qt::ShiftModifier) == Qt::ShiftModifier)
+    {
+        mod_out = mod_out | TW_KMOD_SHIFT;
+    }
+    if ((mod_inc & Qt::ControlModifier) == Qt::ControlModifier)
+    {
+        mod_out = mod_out | TW_KMOD_CTRL;
+    }
+    if ((mod_inc & Qt::AltModifier) == Qt::AltModifier)
+    {
+        mod_out = mod_out | TW_KMOD_ALT;
+    }
 
-      case Qt::Key_Minus:
-         scale_minus();    // удалиться от сцены
-      break;
+    int t_key = pe->key();
+    
 
-      case Qt::Key_Up:
-         rotate_up();      // повернуть сцену вверх
-      break;
+    switch (pe->key())
+    {
+        case Qt::Key_Plus:
+            scale_plus();     // приблизить сцену
+        break;
 
-      case Qt::Key_Down:
-         rotate_down();    // повернуть сцену вниз
-      break;
+        case Qt::Key_Equal:
+            scale_plus();     // приблизить сцену
+        break;
 
-      case Qt::Key_Left:
+        case Qt::Key_Minus:
+            scale_minus();    // удалиться от сцены
+        break;
+
+        case Qt::Key_Up:
+            rotate_up();      // повернуть сцену вверх
+        break;
+
+        case Qt::Key_Down:
+            rotate_down();    // повернуть сцену вниз
+        break;
+
+        case Qt::Key_Left:
         rotate_left();     // повернуть сцену влево
-      break;
+        break;
 
-      case Qt::Key_Right:
-         rotate_right();   // повернуть сцену вправо
-      break;
+        case Qt::Key_Right:
+            rotate_right();   // повернуть сцену вправо
+        break;
 
-      case Qt::Key_PageDown:
-         translate_down(); // транслировать сцену вниз
-      break;
+        case Qt::Key_PageDown:
+            translate_down(); // транслировать сцену вниз
+        break;
 
-      case Qt::Key_PageUp:
-         translate_up();   // транслировать сцену вверх
-      break;
+        case Qt::Key_PageUp:
+            translate_up();   // транслировать сцену вверх
+        break;
 
-      case Qt::Key_Space:  // клавиша пробела
-         defaultScene();   // возвращение значений по умолчанию
-      break;
+        case Qt::Key_Space:  // клавиша пробела
+            defaultScene();   // возвращение значений по умолчанию
+        break;
 
-      case Qt::Key_Escape: // клавиша "эскейп"
-         this->close();    // завершает приложение
-      break;
-   }
+        case Qt::Key_Escape: // клавиша "эскейп"
+            this->close();    // завершает приложение
+        break;
+        case Qt::Key_Enter:
+            t_key = TW_KEY_RETURN;
+        break;
+        case Qt::Key_Backspace:
+            t_key = TW_KEY_BACKSPACE;
+        break;
+        case Qt::Key_Delete:
+            t_key = TW_KEY_DELETE;
+        break;
+    }
 
+    TwKeyPressed(t_key, mod_out);
    //updateGL(); // обновление изображения
 }
 
@@ -463,8 +588,7 @@ void scene_3d::timerEvent(QTimerEvent * event)
     //angle += 1;
 
 	state_vis temp = target->get_state_vis();
-	double a = 5;
-    point_3d temp_force(a * (cos(temp.coord.y) - 0.5 *temp.coord.x/posic), 0.9 * a * (cos(temp.coord.z) - 0.5 *temp.coord.y/posic), a * (cos(temp.coord.x) - 0.5 * temp.coord.z/posic)); 
+    point_3d temp_force(target_speed * (cos(temp.coord.y) - 0.5 *temp.coord.x/posic), 0.9 * target_speed * (cos(temp.coord.z) - 0.5 *temp.coord.y/posic), target_speed * (cos(temp.coord.x) - 0.5 * temp.coord.z/posic)); 
 	target->set_force(temp_force);
     universe.update();
     main_scene.update();

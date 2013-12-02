@@ -24,6 +24,7 @@ namespace object
         void init          (point_3d);
         void deinit        ();
         void change_vis    (bool);
+        void change_rot    (bool);
         //void giveown       (boost::shared_ptr<object_mod> const);
 		void giveown       (object_mod * const);
              visual_object (look new_model);
@@ -37,6 +38,6 @@ namespace object
 		object_mod * owner;
         look model_vis;
         bool is_visible;
-
+        bool is_rotating;
     };
 } //object

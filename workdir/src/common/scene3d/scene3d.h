@@ -25,6 +25,7 @@ protected:
     /*virtual*/ void paintGL();
     void mouseMoveEvent(QMouseEvent* pe);
     void mousePressEvent(QMouseEvent* pe);
+    void mouseReleaseEvent(QMouseEvent* pe);
     void keyPressEvent(QKeyEvent* pe);
 
 public:

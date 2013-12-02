@@ -8,6 +8,8 @@
 
 //#include<Windows.h>
 
+#include<AntTweakBar.h>
+
 #include <qmath.h>
 #include <QtGui>
 #include <QApplication>
