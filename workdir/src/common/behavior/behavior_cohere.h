@@ -17,6 +17,7 @@ namespace behavior
         public:
             void apply           (boost::shared_ptr<object::dynamic_object> obj)  ;
             void init            (std::vector<boost::shared_ptr<object::object_mod> > const&);
+            void init             (double optimal_radius, double power);
                  behavior_cohere  (double optimal_radius, double power);
                  ~behavior_cohere ();
         private:

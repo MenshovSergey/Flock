@@ -6,13 +6,18 @@ using namespace std;
 namespace object
 {
         void dynamic_object::init(point_3d new_coord, point_3d new_speed, point_3d new_force, double new_max_speed, 
-			double new_max_force, double new_mass, double new_radius)
+			double new_max_force, double new_max_rot, double new_mass, double new_radius)
         {
             coord = new_coord;
             speed = new_speed;
             force = new_force;
             max_speed = new_max_speed;
             max_force = new_max_force;
+            max_rot = new_max_rot;
+            phi = 0;
+            psi = 0;
+            rot_phi = 0;
+            rot_psi = 0;
             mass = new_mass;
             radius = new_radius;
         }
@@ -39,20 +44,9 @@ namespace object
         state_vis dynamic_object::get_state_vis()
         {
             state_vis result(coord);
-			if (abs(speed) == 0)
-			{
-				result.phi = 0;
-				result.psi = 0;
-				return result;
-			}
-            double r = sqrt(speed.x * speed.x + speed.y * speed.y + speed.z * speed.z);
-            result.psi = asin(speed.z / r);
-            r =  sqrt(speed.x * speed.x + speed.y * speed.y);
-            result.phi = acos(speed.x / r);
-            if (speed.y < 0)
-            {
-                result.phi = -result.phi;
-            }
+
+            result.phi = phi;
+            result.psi = psi;
             return result;
 		}
 
@@ -64,6 +58,9 @@ namespace object
         void dynamic_object::update()
         {
             truncate_force();
+
+            force = prev_force + (force - prev_force) / 10;
+
 			speed += force;
             if (abs(speed) > max_speed)
             {
@@ -71,6 +68,81 @@ namespace object
                 speed /= r_coef;
             }
             coord += speed;
+
+            double target_phi;
+            double target_psi;
+
+            if (abs(speed) == 0)
+			{
+				target_phi = 0;
+				target_psi = 0;
+                rot_phi = 0;
+                rot_psi = 0;
+			}
+            else
+            {
+                double r = sqrt(speed.x * speed.x + speed.y * speed.y + speed.z * speed.z);
+                double sgn = 1;
+                target_psi = asin(speed.z / r);                  
+                r =  sqrt(speed.x * speed.x + speed.y * speed.y);
+                target_phi = acos(speed.x / r);
+                if (speed.y < 0)
+                {
+                    target_phi = -target_phi;
+                }
+          
+                if (target_phi > phi + M_PI)
+                {
+                    sgn = -1;
+                }
+
+                if (target_phi < phi - M_PI)
+                {
+                    sgn = -1;
+                }
+
+                r = sqrt((target_phi - phi) * (target_phi - phi) + (target_psi - psi) * (target_psi - psi));
+
+                /*rot_phi = rot_phi + sgn * (target_phi - phi) / r * max_rot * abs(speed) / max_speed;
+                if (abs(rot_phi) > abs (target_phi - phi))
+                {
+                    rot_phi = target_phi - phi;
+                }
+                rot_psi = rot_psi + sgn * (target_psi - psi) / r * max_rot * abs(speed) / max_speed;
+                if (abs(rot_psi) > abs (target_psi - psi))
+                {
+                    rot_psi = target_psi - psi;
+                } */
+
+                rot_phi = sgn * (target_phi - phi)/10;
+                rot_psi = (target_psi - psi)/10;
+                
+
+            }
+            psi += rot_psi;
+            phi += rot_phi;
+
+            if (psi > M_PI / 2)
+            {
+                psi = M_PI / 2;
+                rot_psi = 0;
+            }
+            if (psi < -M_PI / 2)
+            {
+                psi = -M_PI / 2;
+                rot_psi = 0;
+            }
+            if (phi > M_PI)
+            {
+                phi -= M_PI * 2;
+            }
+            if (phi < - M_PI)
+            {
+                phi += M_PI * 2;
+            }
+
+            prev_force = force;
+
 			force.x = 0;
 			force.y = 0;
 			force.z = 0;

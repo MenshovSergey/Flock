@@ -102,6 +102,8 @@ void scene_3d::paintGL()
 
         //glColor4f(1.0, 0.0, 1,1);
 
+    glMaterialf(GL_FRONT, GL_AMBIENT, 1.f);
+
     point_3d vertex1, vertex2, vertex3, vertex4;
     for (int i = 0; i < objects.size(); i++)
     {
@@ -174,9 +176,9 @@ void scene_3d::light()
     glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.0005);*/
 
     GLfloat light2_diffuse[] = {1, 1, 1};
-    GLfloat light2_position[] = {(-posic - 1), -posic-1, (-posic - 1), 1};
+    GLfloat light2_position[] = {0, -1, 0, -0};
     glEnable(GL_LIGHT2);
-    glLightfv(GL_LIGHT2, GL_DIFFUSE, light2_diffuse);
+    glLightfv(GL_LIGHT2, GL_AMBIENT, light2_diffuse);
     glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
     glLightf(GL_LIGHT2, GL_CONSTANT_ATTENUATION, 1.0);
     glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, 0.0);

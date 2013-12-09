@@ -51,6 +51,10 @@ boost::shared_ptr<object::flock> main_flock = boost::make_shared<object::flock>(
 vector<boost::shared_ptr<object::flock> > all_flocks;
 point_3d p(0,0,0);
 
+int time_global = 0;
+double freq_global = 500;
+boost::shared_ptr<behavior::behavior_cohere>  flocker;
+
 namespace
 {
 
@@ -65,7 +69,7 @@ namespace
         boost::shared_ptr<object::dynamic_object> new_obj = boost::make_shared<object::dynamic_object>(0);
         boost::shared_ptr<object::visual_object> new_vis = boost::make_shared< object::visual_object>(prototype_look);
         point_3d temp(0,0,0.1);
-        new_obj->init(temp, temp, temp, 0.5, 1, 1, 1);
+        new_obj->init(temp, temp, temp, 0.5, 1, 0.01, 1, 1);
 	    new_obj->revisualise(new_vis);
 	    new_vis->change_vis(true);
         all_flocks[num]->reg(new_obj);
@@ -95,6 +99,8 @@ struct Timer_scene :public  QGLWidget
     void timerEvent(QTimerEvent * event)
     {   
         int posic = 200;
+        flocker->init(25 + 20 * sin(2 * M_PI * time_global / freq_global), 1);
+        ++time_global;
         state_vis temp = target->get_state_vis();
         point_3d temp_force(target_speed * (cos(temp.coord.y) - 0.5 *temp.coord.x/posic), 0.9 * target_speed * (cos(temp.coord.z) - 0.5 *temp.coord.y/posic), target_speed * (cos(temp.coord.x) - 0.5 * temp.coord.z/posic)); 
 	    //point_3d temp_force(target_speed * (- 0.5 * temp.coord.x/200),  target_speed * (- 0.5 *temp.coord.y/200), target_speed * (- 0.5 * temp.coord.z/200)); 
@@ -169,10 +175,10 @@ int main(int argc, char *argv[])
 
     point_3d t_speed(0,0,0);
     point_3d t_force(0,0,0);
-	temps.resize(100);
-	viss.resize(100);
+	temps.resize(200);
+	viss.resize(200);
 
-	boost::shared_ptr<behavior::behavior_cohere>  flocker = boost::make_shared< behavior::behavior_cohere>(15., 1);
+	flocker = boost::make_shared< behavior::behavior_cohere>(15., 1);
 
 	universe.add(main_flock);
 
@@ -213,7 +219,7 @@ int main(int argc, char *argv[])
 	point_3d target_pos(0, 0, 0);
     point_3d point_null(0, 0, 0);
 
-	target->init(target_pos, point_null, point_null, 4, 1, 1, 1);
+	target->init(target_pos, point_null, point_null, 4, 1, 0.01, 1, 1);
 	target->revisualise(target_vis);
 	target_vis->change_vis(true);
     target_vis->change_rot(false);
@@ -229,7 +235,7 @@ int main(int argc, char *argv[])
 		viss[i] = boost::make_shared< object::visual_object>(model_vis);
 
 		point_3d t_coord(i,sin(static_cast<double>(i)),cos(static_cast<double>(i)));
-        temps[i]->init(t_coord, t_speed, t_force, 1, 0.3, 1, 1);
+        temps[i]->init(t_coord, t_speed, t_force, 1, 0.3, 0.05, 1, 1);
         temps[i]->revisualise(viss[i]);
 		viss[i]->change_vis(true);
 		main_flock->reg(temps[i]);

@@ -29,7 +29,7 @@ class dynamic_object
 
 
     public:
-        void      init          (point_3d, point_3d, point_3d, double, double, double, double);
+        void      init          (point_3d, point_3d, point_3d, double, double, double, double, double);
         void      deinit        ();
         void      revisualise   (boost::shared_ptr<visual_object>);
 
@@ -42,6 +42,11 @@ class dynamic_object
         point_3d       force;
         double         max_speed;
         double         max_force;
+        double         max_rot;
+        double         rot_phi;
+        double         rot_psi;
+        double         phi;
+        double         psi;
         double         mass;
         double         radius;
 		void           truncate_force();
@@ -49,6 +54,9 @@ class dynamic_object
 		//visual_object * visualisation;
         int            obj_type;
         //quaternion for orientation
+
+
+        point_3d prev_force;
 };
 
 } //object
