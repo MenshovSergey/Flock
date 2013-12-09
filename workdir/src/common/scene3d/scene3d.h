@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <geometry/point_3d.h>
 #include <QtGui>  
 #include "typedef/typedef.h"
 #include <containers/look.h>
@@ -51,6 +52,7 @@ public:
     double course_;
     double range_;
     double pitch_;
+    point_3d center;
     std::vector<boost::shared_ptr<look>> objects;
     scene_3d(scene_3d const&){
 	}
