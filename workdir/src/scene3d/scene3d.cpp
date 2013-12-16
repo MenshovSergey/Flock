@@ -405,7 +405,7 @@ void scene_3d::timerEvent(QTimerEvent * event)
 void scene_3d::drawLines()
 {
 
-    glColor4f(1, 1, 0,0.3);
+    glColor4f(0.5, 0.5, 1.,0.3);
 	glLineWidth(10);
 	double l_posic = posic - 1;
     glBegin(GL_LINES);//
@@ -503,7 +503,7 @@ void scene_3d::drawLines()
 
 void scene_3d::drawQuads()
 {
-    glColor4f(1.0,1.0,0,0.3);
+    glColor4f(0.5,0.5,1.,0.3);
     glBegin(GL_QUADS);
       glVertex3f(-posic, -posic, -posic);
       glVertex3f(posic, -posic,  -posic);

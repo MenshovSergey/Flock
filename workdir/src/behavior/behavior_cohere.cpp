@@ -15,7 +15,7 @@ using namespace std;
             {
                 point_3d v = (obj->get_state()).coord - (mates_[i]->get_state()).coord;
                 double r = abs(v);
-                double b = b_ + b_ * 0.5 * sin(r);
+                double b = b_;
                 temp += v / r * (1 / (r * r * r) - 1 / r * b * b) * a_;
             }
         }

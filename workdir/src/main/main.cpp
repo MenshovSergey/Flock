@@ -99,7 +99,7 @@ struct Timer_scene :public  QGLWidget
     void timerEvent(QTimerEvent * event)
     {   
         int posic = 200;
-        flocker->init(25 + 20 * sin(2 * M_PI * time_global / freq_global), 1);
+        //flocker->init(25 + 20 * sin(2 * M_PI * time_global / freq_global), 1);
         ++time_global;
         state_vis temp = target->get_state_vis();
         point_3d temp_force(target_speed * (cos(temp.coord.y) - 0.5 *temp.coord.x/posic), 0.9 * target_speed * (cos(temp.coord.z) - 0.5 *temp.coord.y/posic), target_speed * (cos(temp.coord.x) - 0.5 * temp.coord.z/posic)); 
@@ -175,8 +175,8 @@ int main(int argc, char *argv[])
 
     point_3d t_speed(0,0,0);
     point_3d t_force(0,0,0);
-	temps.resize(200);
-	viss.resize(200);
+	temps.resize(100);
+	viss.resize(100);
 
 	flocker = boost::make_shared< behavior::behavior_cohere>(15., 1);
 
