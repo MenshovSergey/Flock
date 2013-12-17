@@ -4,7 +4,7 @@
 #include<behavior/behavior_cohere.h>
 #include<behavior/behavior_pursuit.h>
 #include<behavior/behavior.h>
-#include<management/manager.h>
+#include<management/manager_flocks.h>
 #include<world/world.h>
 #include<scene/scene.h>
 #include<scene3d/scene3d.h>
@@ -12,26 +12,6 @@
 #include "boost/make_shared.hpp"
 
 using namespace std;
-
-void gravity_xyz(vector<boost::shared_ptr<object::object_mod>> const & objects, map<boost::shared_ptr<object::object_mod>, 
-	boost::shared_ptr<object::controls>>& controls)
-{
-    size_t size = objects.size();
-    int x_lim = 0;
-    int y_lim = 0;
-    int z_lim = 0;
-    for (size_t i = 0; i < size; ++i)
-    {
-        if (controls.find(objects[i]) != controls.end())
-        {
-            state temp = objects[i]->get_state();
-            double r = ((x_lim - temp.coord.x) * (x_lim - temp.coord.x) + (y_lim - temp.coord.y) * (y_lim - temp.coord.y) + (z_lim - temp.coord.z) * (z_lim - temp.coord.z));
-            double f = 5 / r;
-            point_3d new_force(f * (x_lim - temp.coord.x) / sqrt(r), f * (y_lim - temp.coord.y) / sqrt(r), f * (z_lim - temp.coord.z) / sqrt(r));
-            (*controls.find(objects[i])).second->set_force(new_force);
-        }
-    }
-}
 
 double target_speed = 0.5;
 
@@ -47,7 +27,10 @@ vector<boost::shared_ptr<object::dynamic_object> > temps;
 vector<boost::shared_ptr<object::visual_object> > viss;
 
 boost::shared_ptr<object::dynamic_object> target;
-boost::shared_ptr<object::flock> main_flock = boost::make_shared<object::flock>(2);
+boost::shared_ptr<object::visual_object> center_vis;
+
+boost::shared_ptr<object::manager_flocks> manager = boost::make_shared<object::manager_flocks>(3);
+
 vector<boost::shared_ptr<object::flock> > all_flocks;
 point_3d p(0,0,0);
 
@@ -107,6 +90,7 @@ struct Timer_scene :public  QGLWidget
         //point_3d temp_force(0,0,0);
         target->set_force(temp_force);
         t_center = target->get_state_vis().coord;
+        center_vis->move(all_flocks[1]->get_state_vis().coord);
         //w.center = t_center;
         universe.update();
         main_scene.update();
@@ -175,12 +159,20 @@ int main(int argc, char *argv[])
 
     point_3d t_speed(0,0,0);
     point_3d t_force(0,0,0);
-	temps.resize(100);
-	viss.resize(100);
+
+	temps.resize(200);
+	viss.resize(200);
 
 	flocker = boost::make_shared< behavior::behavior_cohere>(15., 1);
 
-	universe.add(main_flock);
+    all_flocks.push_back(boost::make_shared<object::flock>(2));
+    all_flocks.push_back(boost::make_shared<object::flock>(3));
+
+    for (size_t i = 0; i < all_flocks.size(); ++ i)
+    {
+        universe.add(all_flocks[i]);
+        manager->reg_f(all_flocks[i]);
+    }
 
     look model_vis = prototype_look;
 
@@ -213,6 +205,8 @@ int main(int argc, char *argv[])
 	
 	target = boost::make_shared<object::dynamic_object>(19);
     target_vis = boost::make_shared< object::visual_object>(model_vis_target);
+    model_vis_target.color.x = 0;
+    center_vis = boost::make_shared< object::visual_object>(model_vis_target);
 	boost::shared_ptr<behavior::behavior_pursuit>  seeker = boost::make_shared <behavior::behavior_pursuit>(target);
 
 
@@ -224,12 +218,18 @@ int main(int argc, char *argv[])
 	target_vis->change_vis(true);
     target_vis->change_rot(false);
 	main_scene.add(target_vis);
+
+    center_vis->change_vis(true);
+    main_scene.add(center_vis);
 	universe.add(target);
 
-	main_flock->add_b(flocker);
-	main_flock->add_b(seeker);
+	all_flocks[0]->add_b(flocker);
+	all_flocks[0]->add_b(seeker);  
 
-	for (int i = 0; i < temps.size(); ++i)
+    
+    universe.add(manager);
+
+	for (int i = 0; i < 100; ++i)
 	{
 		temps[i] = boost::make_shared< object::dynamic_object>(0);
 		viss[i] = boost::make_shared< object::visual_object>(model_vis);
@@ -238,13 +238,35 @@ int main(int argc, char *argv[])
         temps[i]->init(t_coord, t_speed, t_force, 1, 0.3, 0.05, 1, 1);
         temps[i]->revisualise(viss[i]);
 		viss[i]->change_vis(true);
-		main_flock->reg(temps[i]);
+		all_flocks[0]->reg(temps[i]);
+        manager->reg(temps[i]);
 		main_scene.add(viss[i]);
         universe.add(temps[i]);
 
 	}
 
-    flocker->init(main_flock->get_members());
+    look model_vis_2 = model_vis;
+    model_vis_2.color.x = 0.5;
+    model_vis_2.color.y = 1;
+    model_vis_2.color.z = 0.5;
+
+    for (int i = 100; i < 200; ++i)
+	{
+		temps[i] = boost::make_shared< object::dynamic_object>(1);
+		viss[i] = boost::make_shared< object::visual_object>(model_vis_2);
+
+		point_3d t_coord(-i + 100,sin(static_cast<double>(i)) + 10,cos(static_cast<double>(i)));
+        temps[i]->init(t_coord, t_speed, t_force, 1, 0.3, 0.05, 1, 1);
+        temps[i]->revisualise(viss[i]);
+		viss[i]->change_vis(true);
+		all_flocks[1]->reg(temps[i]);
+        manager->reg(temps[i]);
+		main_scene.add(viss[i]);
+        universe.add(temps[i]);
+
+	}
+
+    flocker->init(all_flocks[0]->get_members());
 
 
     return a.exec();

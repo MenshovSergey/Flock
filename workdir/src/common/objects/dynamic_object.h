@@ -6,6 +6,8 @@
 namespace object
 {
 
+struct flock;
+
 class dynamic_object
     : public object_mod
     , public controls
@@ -32,6 +34,8 @@ class dynamic_object
         void      init          (point_3d, point_3d, point_3d, double, double, double, double, double);
         void      deinit        ();
         void      revisualise   (boost::shared_ptr<visual_object>);
+        void      set_flock     (flock * new_parent);
+        flock *   parent_flock  ();
 
                   dynamic_object(int object_type);
                   ~dynamic_object();
@@ -51,6 +55,7 @@ class dynamic_object
         double         radius;
 		void           truncate_force();
         boost::shared_ptr<visual_object> visualisation;
+        flock *        parent;
 		//visual_object * visualisation;
         int            obj_type;
         //quaternion for orientation

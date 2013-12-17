@@ -135,6 +135,7 @@ namespace object
 
         void visual_object::update()
         {
+            if (owner == 0) return;
             state_vis temp = owner->get_state_vis();
             coord = temp.coord;
 			phi = temp.phi;
@@ -153,6 +154,7 @@ namespace object
 			, psi(0)
             , is_visible(0)
             , is_rotating(1)
+            , owner(0)
         {
         }
 

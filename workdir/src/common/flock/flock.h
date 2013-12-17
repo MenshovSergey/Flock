@@ -29,11 +29,12 @@ struct flock : public object_mod
                             ~flock        ();
 
     private:
-        std::vector<boost::shared_ptr<dynamic_object>>          objects;
+        std::vector<boost::shared_ptr<object::dynamic_object> > objects;
         size_t                                o_size;
-        std::vector<boost::shared_ptr<behavior::behavior_base>> behaviors;
+        std::vector<boost::shared_ptr<behavior::behavior_base> >behaviors;
         size_t                                b_size;
         int                                   obj_type;
+        point_3d                              coord;
 };
 
 }
