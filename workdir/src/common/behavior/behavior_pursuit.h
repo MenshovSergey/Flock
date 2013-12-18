@@ -29,5 +29,18 @@ namespace behavior
 
     };
 
+     class behavior_evade_rad: public behavior_base
+    {
+        public:
+            void apply             (boost::shared_ptr<object::dynamic_object>  obj) override;
+                 
+                 behavior_evade_rad  (boost::shared_ptr<object::object_mod>  target, double r);
+                 ~behavior_evade_rad ();
+        private:
+            boost::shared_ptr<object::object_mod>  target_;
+            double radius_;
+
+    };
+
     point_3d interpolation(boost::shared_ptr<object::object_mod>  target, boost::shared_ptr<object::dynamic_object> obj);
 } //behavior

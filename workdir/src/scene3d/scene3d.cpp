@@ -35,7 +35,7 @@ scene_3d::scene_3d(QWidget* parent/*= 0*/)
     : QGLWidget(parent)
     , course_(0)
     , pitch_(0)
-    , range_(40)
+    , range_(80)
     , center(0, 0, 0)
 {
    xRot = 0;

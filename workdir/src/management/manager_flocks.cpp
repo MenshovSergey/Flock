@@ -36,6 +36,7 @@ namespace object
             size_t obj_size = objects.size();
             size_t f_size = flocks.size();
             vector<point_3d> flock_coords;
+
             for (size_t j = 0; j < f_size; ++j)
             {
                 flock_coords.push_back(flocks[j]->get_state_vis().coord);
@@ -44,7 +45,7 @@ namespace object
             for (size_t i = 0; i < obj_size; ++i)
             {
                 point_3d coord = objects[i]->get_state_vis().coord;
-                double r = abs(flocks[0]->get_state_vis().coord - coord);
+                double r = abs(flock_coords[0] - coord);
                 size_t iter = 0;
                 dynamic_object * cur = dynamic_cast<dynamic_object *> (objects[i].get());
 
@@ -56,6 +57,7 @@ namespace object
                         iter = j;
                     }
                 }
+
                 if (flocks[iter].get() != cur->parent_flock())
                 {
                     if (cur->parent_flock() != NULL)

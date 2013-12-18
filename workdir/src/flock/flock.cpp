@@ -40,7 +40,7 @@ void flock::update ()
 void flock::reg (boost::shared_ptr<object_mod> new_object)
 {	
     objects.push_back(boost::dynamic_pointer_cast<dynamic_object>(new_object));
-    objects[objects.size() - 1]->set_flock(this);
+    objects[o_size]->set_flock(this);
     ++o_size;
 }
 
@@ -59,7 +59,8 @@ void flock::unreg (boost::shared_ptr<object_mod> new_object)
     }
     if (i < size)
     {
-        //objects.pop_back();
+        objects.pop_back();
+        --o_size;
     }
 }
 

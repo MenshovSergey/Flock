@@ -16,6 +16,9 @@ using namespace std;
 double target_speed = 0.5;
 
 int new_flock_id;
+bool lock_screen = false;
+bool fix_run = true;
+scene_3d * frame;
 
 look prototype_look;
 TwBar * control_bar;
@@ -27,7 +30,9 @@ vector<boost::shared_ptr<object::dynamic_object> > temps;
 vector<boost::shared_ptr<object::visual_object> > viss;
 
 boost::shared_ptr<object::dynamic_object> target;
-boost::shared_ptr<object::visual_object> center_vis;
+//boost::shared_ptr<object::visual_object> center_vis;
+
+boost::shared_ptr<object::dynamic_object> target2;
 
 boost::shared_ptr<object::manager_flocks> manager = boost::make_shared<object::manager_flocks>(3);
 
@@ -37,6 +42,7 @@ point_3d p(0,0,0);
 int time_global = 0;
 double freq_global = 500;
 boost::shared_ptr<behavior::behavior_cohere>  flocker;
+boost::shared_ptr<behavior::behavior_cohere>  flocker2;
 
 namespace
 {
@@ -79,19 +85,38 @@ struct Timer_scene :public  QGLWidget
     {   
         startTimer(40);
     }
+
     void timerEvent(QTimerEvent * event)
     {   
+        if (fix_run) return;
+
         int posic = 200;
         //flocker->init(25 + 20 * sin(2 * M_PI * time_global / freq_global), 1);
         ++time_global;
         state_vis temp = target->get_state_vis();
-        point_3d temp_force(target_speed * (cos(temp.coord.y) - 0.5 *temp.coord.x/posic), 0.9 * target_speed * (cos(temp.coord.z) - 0.5 *temp.coord.y/posic), target_speed * (cos(temp.coord.x) - 0.5 * temp.coord.z/posic)); 
-	    //point_3d temp_force(target_speed * (- 0.5 * temp.coord.x/200),  target_speed * (- 0.5 *temp.coord.y/200), target_speed * (- 0.5 * temp.coord.z/200)); 
+        point_3d temp_force(target_speed * (cos(temp.coord.y) - 0.5 *temp.coord.x/posic), 0.9 * target_speed * (cos(temp.coord.z) - 0.5 *temp.coord.y/posic), target_speed * (cos(temp.coord.x) - 0.5 * temp.coord.z/posic));
+
+
         //point_3d temp_force(0,0,0);
         target->set_force(temp_force);
-        t_center = target->get_state_vis().coord;
-        center_vis->move(all_flocks[1]->get_state_vis().coord);
-        //w.center = t_center;
+
+        temp_force.x =  target_speed * (cos(temp.coord.y) - 0.5 *temp.coord.x/posic);
+        temp_force.y =  target_speed * (cos(temp.coord.z) - 0.5 *temp.coord.y/posic);
+        temp_force.z = - 0.9 * target_speed * (cos(temp.coord.x) - 0.5 * temp.coord.z/posic); 
+
+        target2->set_force(temp_force);
+
+        t_center = all_flocks[0]->get_state_vis().coord;
+
+        //center_vis->move(all_flocks[1]->get_state_vis().coord);
+        if (lock_screen) 
+        {
+            frame->center = t_center;
+        }
+        else
+        {
+            frame->center = p;
+        }
         universe.update();
         main_scene.update();
         main_scene.render();
@@ -102,6 +127,8 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     scene_3d w;
+    frame = &w;
+
     w.show();
     Timer_scene t; 
 
@@ -123,6 +150,9 @@ int main(int argc, char *argv[])
                " label='NewFlock ID' help='ID for flock you create' ");
 
     TwAddButton(control_bar, "add_flock_main", add_flock, NULL, " label='Add flock'");
+    TwAddVarRW(control_bar, "lock_screen", TW_TYPE_BOOL32, &fix_run, " label='Stop/Run'");
+    TwAddVarRW(control_bar, "lock_on_flock", TW_TYPE_BOOL32, &lock_screen, " label='Lock on'");
+
     TwAddButton(control_bar, "text_new_look", NULL, NULL, " label='Protoype look:'");
     TwAddVarRW(control_bar, "prototype_vis", TW_TYPE_BOOL32, &prototype_look.is_visible, 
                " label='Is_visible' help='' ");
@@ -160,10 +190,11 @@ int main(int argc, char *argv[])
     point_3d t_speed(0,0,0);
     point_3d t_force(0,0,0);
 
-	temps.resize(200);
-	viss.resize(200);
+	temps.resize(100);
+	viss.resize(100);
 
-	flocker = boost::make_shared< behavior::behavior_cohere>(15., 1);
+	flocker = boost::make_shared< behavior::behavior_cohere>(7., 2);
+    flocker2 = boost::make_shared< behavior::behavior_cohere>(7., 2);
 
     all_flocks.push_back(boost::make_shared<object::flock>(2));
     all_flocks.push_back(boost::make_shared<object::flock>(3));
@@ -202,12 +233,20 @@ int main(int argc, char *argv[])
 
 
     boost::shared_ptr<object::visual_object>  target_vis;
+    boost::shared_ptr<object::visual_object>  target_vis2;
 	
 	target = boost::make_shared<object::dynamic_object>(19);
     target_vis = boost::make_shared< object::visual_object>(model_vis_target);
+
     model_vis_target.color.x = 0;
-    center_vis = boost::make_shared< object::visual_object>(model_vis_target);
+    model_vis_target.color.y = 1;
+
+    target2 = boost::make_shared<object::dynamic_object>(20);
+    target_vis2 = boost::make_shared< object::visual_object>(model_vis_target);
+
+    //center_vis = boost::make_shared< object::visual_object>(model_vis_target);
 	boost::shared_ptr<behavior::behavior_pursuit>  seeker = boost::make_shared <behavior::behavior_pursuit>(target);
+    boost::shared_ptr<behavior::behavior_pursuit>  seeker2 = boost::make_shared <behavior::behavior_pursuit>(target2);
 
 
 	point_3d target_pos(0, 0, 0);
@@ -215,21 +254,29 @@ int main(int argc, char *argv[])
 
 	target->init(target_pos, point_null, point_null, 4, 1, 0.01, 1, 1);
 	target->revisualise(target_vis);
-	target_vis->change_vis(true);
+	//target_vis->change_vis(true);
     target_vis->change_rot(false);
 	main_scene.add(target_vis);
 
-    center_vis->change_vis(true);
-    main_scene.add(center_vis);
+    target2->init(target_pos, point_null, point_null, 4, 1, 0.01, 1, 1);
+	target2->revisualise(target_vis2);
+	//target_vis2->change_vis(true);
+    target_vis2->change_rot(false);
+	main_scene.add(target_vis2);
+
 	universe.add(target);
+
+    universe.add(target2);
 
 	all_flocks[0]->add_b(flocker);
 	all_flocks[0]->add_b(seeker);  
 
+    all_flocks[1]->add_b(flocker2);
+	all_flocks[1]->add_b(seeker2);
     
     universe.add(manager);
 
-	for (int i = 0; i < 100; ++i)
+	for (int i = 0; i < 50; ++i)
 	{
 		temps[i] = boost::make_shared< object::dynamic_object>(0);
 		viss[i] = boost::make_shared< object::visual_object>(model_vis);
@@ -250,12 +297,12 @@ int main(int argc, char *argv[])
     model_vis_2.color.y = 1;
     model_vis_2.color.z = 0.5;
 
-    for (int i = 100; i < 200; ++i)
+    for (int i = 50; i < 100; ++i)
 	{
 		temps[i] = boost::make_shared< object::dynamic_object>(1);
 		viss[i] = boost::make_shared< object::visual_object>(model_vis_2);
 
-		point_3d t_coord(-i + 100,sin(static_cast<double>(i)) + 10,cos(static_cast<double>(i)));
+		point_3d t_coord(-i + 40,sin(static_cast<double>(i)) + 10,cos(static_cast<double>(i)));
         temps[i]->init(t_coord, t_speed, t_force, 1, 0.3, 0.05, 1, 1);
         temps[i]->revisualise(viss[i]);
 		viss[i]->change_vis(true);
@@ -267,7 +314,11 @@ int main(int argc, char *argv[])
 	}
 
     flocker->init(all_flocks[0]->get_members());
+    flocker2->init(all_flocks[1]->get_members());
 
+    universe.update();
+    main_scene.update();
+    main_scene.render();
 
     return a.exec();
  
